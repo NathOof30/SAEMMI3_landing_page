@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Accès au jeu — L'Expédition Secrète à Lens</title>
+  <meta name="description"
+    content="Accédez à l'application de L'Expédition Secrète à Lens si vous disposez déjà de votre kit d'explorateur ou vérifiez votre réservation avant le lancement le 5 juillet 2027.">
+  <link rel="icon" type="image/svg+xml" href="./icon.svg">
+  <link rel="preconnect" href="https://use.typekit.net" crossorigin>
+  <link rel="preconnect" href="https://p.typekit.net" crossorigin>
+  <link rel="stylesheet" href="https://use.typekit.net/msd2zjt.css">
+  <link rel="stylesheet" href="./src/styles/main.css">
+</head>
+
+<body class="min-h-screen flex flex-col bg-expedition-paper">
+  <a href="#main-content" class="skip-link">Aller directement au contenu principal</a>
+
+  <header class="site-header">
+    <div
+      class="max-w-[1200px] mx-auto px-4 sm:px-6 min-h-[60px] md:min-h-[68px] flex items-center justify-between gap-3">
+      <div class="flex items-center gap-3 min-w-0">
+        <a href="./index.html"
+          class="display-title text-[16px] sm:text-xl text-blood no-underline hover:text-ink transition-colors whitespace-nowrap truncate"
+          aria-label="Accueil — L'Expédition Secrète Lens">
+          <strong>L'Expédition Secrète<span class="hidden xl:inline"> — Lens</span></strong>
+        </a>
+        <p
+          class="hidden lg:inline-flex items-center gap-2 bg-white border-2 border-ink rounded-full px-3 py-1 shrink-0 m-0">
+          <img src="./lens-tourisme-logo-e1673958887436.webp" alt="Logo Lens Liévin Tourisme" width="115" height="40"
+            class="h-5 w-auto object-contain">
+          <span aria-hidden="true" class="text-xs font-extrabold text-ink">×</span>
+          <img src="./asmodee_logo.webp" alt="Logo Asmodee" width="92" height="40" class="h-4 w-auto object-contain">
+        </p>
+      </div>
+
+      <nav aria-label="Navigation secondaire" class="flex items-center gap-3 sm:gap-5 shrink-0">
+        <ul class="flex items-center gap-3 sm:gap-5 list-none m-0 p-0 text-sm font-extrabold">
+          <li class="hidden sm:block">
+            <a href="./index.html" class="text-ink no-underline hover:text-blood transition-colors whitespace-nowrap">
+              Retour à la présentation
+            </a>
+          </li>
+          <li class="hidden lg:block">
+            <a href="./contact.html" class="text-ink no-underline hover:text-blood transition-colors whitespace-nowrap">
+              Contacter l'Office de Tourisme
+            </a>
+          </li>
+          <li>
+            <a href="./index.html#inscription"
+              class="btn-expedition btn-expedition--gold btn-expedition--sm !px-2.5 sm:!px-4 !text-[13px] sm:!text-[14px] whitespace-nowrap">
+              Réserver un kit<span class="hidden sm:inline"> gratuit</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main-content" class="flex-1 w-full max-w-[920px] mx-auto px-4 sm:px-6 py-10 sm:py-14 space-y-8">
+    <header class="space-y-4">
+      <p class="m-0">
+        <a href="./index.html"
+          class="inline-flex items-center gap-1.5 text-sm font-extrabold text-blood underline underline-offset-2 hover:text-ink">
+          ← Retour à l'accueil
+        </a>
+      </p>
+      <h1 class="display-title text-3xl sm:text-5xl text-ink m-0">
+        Accès au jeu : vous avez déjà votre kit ou votre réservation ?
+      </h1>
+      <p class="text-[17px] text-text-muted max-w-[65ch] leading-relaxed m-0">
+        L'application de jeu de piste s'ouvre <strong class="text-ink">directement dans le navigateur de votre
+          smartphone</strong>
+        (Chrome ou Safari), sans rien installer depuis les boutiques d'applications. Elle sera ouverte aux équipes du
+        <strong class="text-ink">lundi 5 juillet au dimanche 18 juillet 2027</strong>.
+      </p>
+    </header>
+
+    <aside id="session-reservation-banner"
+      class="bg-success-soft border-[3px] border-ink text-[#14532D] rounded-[20px] shadow-[0_6px_0_#1A1A1A] p-5 sm:p-6 space-y-2"
+      hidden aria-live="polite">
+      <div class="flex items-center gap-2.5">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#15803D" stroke-width="2.6"
+          stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="shrink-0">
+          <polyline points="20 6 9 17 4 12" />
+        </svg>
+        <h2 class="text-lg font-extrabold text-[#14532D] m-0">Votre réservation enregistrée sur cet appareil</h2>
+      </div>
+      <p id="session-reservation-summary" class="text-sm sm:text-[15px] font-semibold leading-relaxed m-0"></p>
+    </aside>
+
+    <section class="card-l1" aria-labelledby="how-to-launch-title">
+      <h2 id="how-to-launch-title" class="display-title text-2xl sm:text-3xl text-blood mb-5">
+        Comment lancer l'aventure le jour J ?
+      </h2>
+      <ol class="space-y-4 list-none p-0 m-0">
+        <li class="card-l2 bg-parchment-light flex items-start gap-3.5">
+          <span
+            class="display-title inline-flex items-center justify-center w-9 h-9 rounded-lg bg-blood text-gold border-2 border-ink text-base shrink-0"
+            aria-hidden="true">01</span>
+          <p class="text-[15px] text-text-muted leading-relaxed m-0">
+            <strong class="text-ink">Via le lien reçu par e-mail :</strong> chaque parent inscrit sur le site vitrine
+            reçoit
+            automatiquement le lien d'ouverture le matin du <strong class="text-ink">5 juillet 2027</strong>.
+          </p>
+        </li>
+        <li class="card-l2 bg-parchment-light flex items-start gap-3.5">
+          <span
+            class="display-title inline-flex items-center justify-center w-9 h-9 rounded-lg bg-blood text-gold border-2 border-ink text-base shrink-0"
+            aria-hidden="true">02</span>
+          <p class="text-[15px] text-text-muted leading-relaxed m-0">
+            <strong class="text-ink">Via le QR code de votre kit papier :</strong> scannez avec l'appareil photo de
+            votre téléphone le
+            QR code d'accueil imprimé sur votre grande carte de Lens remise à l'Office de Tourisme.
+          </p>
+        </li>
+        <li class="card-l2 bg-parchment-light flex items-start gap-3.5">
+          <span
+            class="display-title inline-flex items-center justify-center w-9 h-9 rounded-lg bg-blood text-gold border-2 border-ink text-base shrink-0"
+            aria-hidden="true">03</span>
+          <p class="text-[15px] text-text-muted leading-relaxed m-0">
+            <strong class="text-ink">À votre rythme :</strong> une fois votre compte d'équipe créé dans le jeu, votre
+            progression est
+            sauvegardée. Vous pouvez parcourir les étapes en une journée ou sur plusieurs jours jusqu'au 18 juillet
+            2027,
+            à pied ou avec le réseau de bus <strong class="text-ink">Tadao gratuit pour tous</strong>.
+          </p>
+        </li>
+      </ol>
+    </section>
+
+    <section class="card-l1" aria-labelledby="lookup-title">
+      <h2 id="lookup-title" class="display-title text-2xl sm:text-3xl text-blood mb-3">
+        Vérifier votre adresse e-mail de lancement
+      </h2>
+      <p class="text-[15px] text-text-muted leading-relaxed mb-5 max-w-[60ch]">
+        Saisissez l'adresse e-mail utilisée lors de votre pré-inscription pour vérifier l'envoi du lien d'ouverture.
+      </p>
+
+      <form id="game-access-lookup-form" class="space-y-4">
+        <div class="space-y-1.5">
+          <label for="access-email" class="block text-sm font-extrabold text-ink">
+            Adresse e-mail de l'équipe *
+          </label>
+          <input id="access-email" name="email" type="email" required
+            pattern="[^\s@]+@[^\s@.]+(?:\.[^\s@.]+)*\.[^\s@.]{2,}"
+            title="Veuillez saisir une adresse e-mail complète (ex. prenom.nom@exemple.fr)." autocomplete="email"
+            maxlength="120" placeholder="Ex. famille.martin@exemple.fr" class="expedition-input max-w-[460px]">
+        </div>
+        <button type="submit" class="btn-expedition btn-expedition--gold">
+          Vérifier mon accès au lancement
+        </button>
+      </form>
+
+      <p id="game-access-status"
+        class="mt-5 bg-gold-soft border-2 border-ink text-ink rounded-xl p-4 text-sm font-bold leading-relaxed m-0"
+        role="status" hidden tabindex="-1"></p>
+    </section>
+
+    <section class="card-l2 !bg-parchment-light flex flex-col sm:flex-row sm:items-center justify-between gap-5"
+      aria-labelledby="no-kit-title">
+      <div class="space-y-1.5">
+        <h2 id="no-kit-title" class="display-title text-2xl text-ink m-0">
+          Vous n'avez pas encore réservé votre kit gratuit ?
+        </h2>
+        <p class="text-sm sm:text-[15px] text-text-muted leading-relaxed max-w-[56ch] m-0">
+          Le jeu fonctionne en duo avec la grande carte papier illustrée et la loupe d'explorateur. Réservez votre kit
+          en moins d'une minute pour le retirer à l'Office de Tourisme de Lens-Liévin (16 Place Jean-Jaurès).
+        </p>
+      </div>
+      <p class="m-0 shrink-0">
+        <a href="./index.html#inscription" class="btn-expedition btn-expedition--blood w-full sm:w-auto">
+          Réserver notre kit gratuit →
+        </a>
+      </p>
+    </section>
+  </main>
+
+  <footer class="bg-ink text-[#E5E7EB] border-t-[3px] border-ink py-10 px-4 sm:px-6 mt-auto">
+    <div class="max-w-[1200px] mx-auto flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
+      <div>
+        <p class="inline-flex items-center gap-3 bg-white border-2 border-white rounded-xl px-3.5 py-1.5 mb-3 m-0">
+          <img src="./lens-tourisme-logo-e1673958887436.webp" alt="Logo Lens Liévin Tourisme" width="115" height="40"
+            loading="lazy" class="h-7 w-auto object-contain">
+          <span aria-hidden="true" class="text-xs font-extrabold text-ink">×</span>
+          <img src="./asmodee_logo.webp" alt="Logo Asmodee" width="92" height="40" loading="lazy"
+            class="h-6 w-auto object-contain">
+        </p>
+        <p class="text-xs sm:text-sm text-[#E5E7EB] m-0">
+          <strong class="text-white">L'Expédition Secrète — Lens</strong> • Du 5 au 18 juillet 2027 • Office de Tourisme
+          de Lens-Liévin.
+        </p>
+      </div>
+      <nav aria-label="Liens légaux et retour">
+        <ul class="flex flex-wrap gap-x-6 gap-y-2.5 text-sm font-bold list-none p-0 m-0">
+          <li><a href="./index.html" class="text-[#E5E7EB] hover:text-gold underline-offset-4 hover:underline">Accueil
+              vitrine</a></li>
+          <li><a href="./mentions-legales.html"
+              class="text-[#E5E7EB] hover:text-gold underline-offset-4 hover:underline">Mentions légales</a></li>
+          <li><a href="./confidentialite.html"
+              class="text-[#E5E7EB] hover:text-gold underline-offset-4 hover:underline">Confidentialité (RGPD)</a></li>
+          <li><a href="./reglement-concours.html"
+              class="text-[#E5E7EB] hover:text-gold underline-offset-4 hover:underline">Règlement du jeu-concours</a>
+          </li>
+          <li><a href="./contact.html" class="text-[#E5E7EB] hover:text-gold underline-offset-4 hover:underline">Contact
+              Office de Tourisme</a></li>
+        </ul>
+      </nav>
+    </div>
+  </footer>
+
+  <script type="module" src="./src/main.js"></script>
+</body>
+
+</html>

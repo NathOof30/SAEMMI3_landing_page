@@ -70,7 +70,7 @@ export function initScrollReveal() {
 }
 
 /**
- * Gère la scène Lot Mystère Switch : accélération des rayons et changement de silhouette
+ * Gère la scène Grand Lot Mystère : accélération des rayons et changement de silhouette
  * mystère au survol ou au focus des cartes de lots (jamais au survol direct de l'image).
  *
  * @returns {void}

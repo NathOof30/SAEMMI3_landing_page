@@ -814,7 +814,7 @@
       </div>
     </section>
 
-    <!-- [7] Grand Tirage au Sort : Scène « Lot Mystère Switch » -->
+    <!-- [7] Grand Tirage au Sort : Scène « Grand Lot Mystère » -->
     <section id="concours" class="section-wrap bg-stage-dark text-white border-b-[2.5px] border-ink"
       aria-labelledby="concours-title">
       <div class="section-inner grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-12 items-center">
@@ -852,51 +852,57 @@
 
             <!-- Silhouettes noires mystères + Grand "?" centré (changent au survol des cartes de lots) -->
             <div class="mystery-silhouette-wrap">
-              <!-- Lot 1 : Console hybride -->
-              <svg class="mystery-prize-svg mystery-switch-svg is-active" data-mystery-prize="grand-lot" viewBox="0 0 380 184"
-                width="380" height="184" role="img"
-                aria-label="Silhouette mystère du Grand Lot : une console portable avec deux manettes latérales et un point d'interrogation doré">
+              <!-- Lot 1 : Entrées parc d'attractions pour l'équipe (Grand Lot Mystère) -->
+              <svg class="mystery-prize-svg mystery-tickets-svg is-active" data-mystery-prize="grand-lot" viewBox="0 0 380 200"
+                width="380" height="200" role="img"
+                aria-label="Silhouette mystère du Grand Lot : des tickets d'entrée pour l'équipe avec un point d'interrogation doré">
                 <defs>
-                  <filter id="mysteryRimSwitch" x="-18%" y="-22%" width="136%" height="144%">
+                  <filter id="mysteryRimTickets" x="-18%" y="-22%" width="136%" height="144%">
                     <feDropShadow dx="0" dy="0" stdDeviation="6" flood-color="#FFFFFF" flood-opacity="0.92" />
                     <feDropShadow dx="0" dy="0" stdDeviation="2" flood-color="#FFFFFF" flood-opacity="0.75" />
                   </filter>
                 </defs>
 
-                <g filter="url(#mysteryRimSwitch)">
-                  <!-- Gâchettes L & R -->
-                  <path d="M26 30 C26 21 38 16 58 16 L70 16 L70 28 L26 34 Z" fill="#050505"
-                    stroke="rgba(255,255,255,0.55)" stroke-width="1.5" />
-                  <path d="M354 30 C354 21 342 16 322 16 L310 16 L310 28 L354 34 Z" fill="#050505"
-                    stroke="rgba(255,255,255,0.55)" stroke-width="1.5" />
+                <g filter="url(#mysteryRimTickets)">
+                  <!-- Billet arrière incliné -->
+                  <g transform="translate(180 96) rotate(-14)">
+                    <path
+                      d="M -102,-51 L 48,-51 A 5,5 0 0 0 58,-51 L 102,-51 Q 110,-51 110,-43 L 110,-14 A 14,14 0 0 0 110,14 L 110,43 Q 110,51 102,51 L 58,51 A 5,5 0 0 0 48,51 L -102,51 Q -110,51 -110,43 L -110,14 A 14,14 0 0 0 -110,-14 L -110,-43 Q -110,-51 -102,-51 Z"
+                      fill="#050505" stroke="rgba(255,255,255,0.75)" stroke-width="2.2" stroke-linejoin="round" />
+                    <rect x="-92" y="-39" width="134" height="78" rx="4" fill="none"
+                      stroke="rgba(255,255,255,0.16)" stroke-width="1.4" />
+                    <line x1="53" y1="-44" x2="53" y2="44" stroke="rgba(255,255,255,0.24)" stroke-width="1.6"
+                      stroke-dasharray="4 4" stroke-linecap="round" />
+                    <polygon
+                      points="-67,-14 -63,-5 -53,-5 -61,1 -58,11 -67,5 -76,11 -73,1 -81,-5 -71,-5"
+                      fill="rgba(255,255,255,0.10)" stroke="rgba(255,255,255,0.22)" stroke-width="1.3" stroke-linejoin="round" />
+                  </g>
 
-                  <!-- Silhouette unifiée tout en noir -->
-                  <path
-                    d="M62 22 C33 22 18 39 18 66 L18 118 C18 145 33 162 62 162 L318 162 C347 162 362 145 362 118 L362 66 C362 39 347 22 318 22 Z"
-                    fill="#050505" stroke="rgba(255,255,255,0.75)" stroke-width="2.2" />
-
-                  <!-- Liserés discrets de séparation des manettes -->
-                  <line x1="78" y1="23" x2="78" y2="161" stroke="rgba(255,255,255,0.22)" stroke-width="1.5" />
-                  <line x1="302" y1="23" x2="302" y2="161" stroke="rgba(255,255,255,0.22)" stroke-width="1.5" />
-
-                  <!-- Reliefs subtils sticks & boutons -->
-                  <circle cx="48" cy="64" r="11.5" fill="#080808" stroke="rgba(255,255,255,0.16)" stroke-width="1.3" />
-                  <circle cx="48" cy="102" r="3.2" fill="rgba(255,255,255,0.12)" />
-                  <circle cx="40" cy="110" r="3.2" fill="rgba(255,255,255,0.12)" />
-                  <circle cx="56" cy="110" r="3.2" fill="rgba(255,255,255,0.12)" />
-                  <circle cx="48" cy="118" r="3.2" fill="rgba(255,255,255,0.12)" />
-                  <rect x="55" y="132" width="8" height="8" rx="1.5" fill="rgba(255,255,255,0.12)" />
-
-                  <circle cx="332" cy="56" r="3.2" fill="rgba(255,255,255,0.12)" />
-                  <circle cx="324" cy="64" r="3.2" fill="rgba(255,255,255,0.12)" />
-                  <circle cx="340" cy="64" r="3.2" fill="rgba(255,255,255,0.12)" />
-                  <circle cx="332" cy="72" r="3.2" fill="rgba(255,255,255,0.12)" />
-                  <circle cx="332" cy="108" r="11.5" fill="#080808" stroke="rgba(255,255,255,0.16)" stroke-width="1.3" />
-                  <circle cx="318" cy="136" r="4.2" fill="rgba(255,255,255,0.12)" />
+                  <!-- Billet avant -->
+                  <g transform="translate(198 116) rotate(6)">
+                    <path
+                      d="M -102,-51 L 48,-51 A 5,5 0 0 0 58,-51 L 102,-51 Q 110,-51 110,-43 L 110,-14 A 14,14 0 0 0 110,14 L 110,43 Q 110,51 102,51 L 58,51 A 5,5 0 0 0 48,51 L -102,51 Q -110,51 -110,43 L -110,14 A 14,14 0 0 0 -110,-14 L -110,-43 Q -110,-51 -102,-51 Z"
+                      fill="#050505" stroke="rgba(255,255,255,0.82)" stroke-width="2.3" stroke-linejoin="round" />
+                    <!-- Cadre intérieur de la partie principale -->
+                    <rect x="-92" y="-39" width="134" height="78" rx="4" fill="none"
+                      stroke="rgba(255,255,255,0.20)" stroke-width="1.5" />
+                    <!-- Ligne de perforation de la souche -->
+                    <line x1="53" y1="-44" x2="53" y2="44" stroke="rgba(255,255,255,0.30)" stroke-width="1.8"
+                      stroke-dasharray="4 4" stroke-linecap="round" />
+                    <!-- Étoile discrète à gauche -->
+                    <polygon
+                      points="-67,-15 -62.5,-5 -52,-5 -60.5,1.5 -57,12 -67,5.5 -77,12 -73.5,1.5 -82,-5 -71.5,-5"
+                      fill="rgba(255,255,255,0.12)" stroke="rgba(255,255,255,0.28)" stroke-width="1.4" stroke-linejoin="round" />
+                    <!-- Lignes discrètes sur la souche à droite -->
+                    <line x1="68" y1="-22" x2="90" y2="-22" stroke="rgba(255,255,255,0.22)" stroke-width="2.2" stroke-linecap="round" />
+                    <line x1="68" y1="-10" x2="86" y2="-10" stroke="rgba(255,255,255,0.16)" stroke-width="1.8" stroke-linecap="round" />
+                    <line x1="68" y1="8" x2="90" y2="8" stroke="rgba(255,255,255,0.16)" stroke-width="1.8" stroke-linecap="round" />
+                    <line x1="68" y1="20" x2="84" y2="20" stroke="rgba(255,255,255,0.22)" stroke-width="2.2" stroke-linecap="round" />
+                  </g>
                 </g>
 
                 <!-- Grand "?" central -->
-                <text x="190" y="124" text-anchor="middle" class="mystery-qmark"
+                <text x="190" y="132" text-anchor="middle" class="mystery-qmark"
                   font-family="'hwt-artz', 'Impact', sans-serif" font-size="98" font-weight="700" fill="#F4B316"
                   stroke="#FFFFFF" stroke-width="3.5" paint-order="stroke fill">?</text>
               </svg>
@@ -1027,7 +1033,7 @@
               <article>
                 <h3 class="font-extrabold text-base text-gold mb-1">Grand Lot Mystère (1er prix)</h3>
                 <p class="text-sm text-[#E5E7EB] leading-relaxed m-0">
-                  Une console de jeu hybride familiale pour réunir petits et grands devant la télévision ou en voyage.
+                  Des billets pour toute votre équipe dans un célèbre parc d'attractions non loin de Lens, pour une journée d'aventure et de sensations fortes.
                 </p>
               </article>
             </li>

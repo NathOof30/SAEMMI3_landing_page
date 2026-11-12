@@ -1,5 +1,6 @@
 import { initGameAccessPage } from './modules/game-access.js';
 import {
+  initFaqAccordion,
   initHeroParallax,
   initMobileStickyCta,
   initMysteryStage,
@@ -18,6 +19,7 @@ function bootstrap() {
   initScrollReveal();
   initKeyForge();
   initMysteryStage();
+  initFaqAccordion();
   initHeroParallax();
   initPhoneTilt();
   initMobileStickyCta();

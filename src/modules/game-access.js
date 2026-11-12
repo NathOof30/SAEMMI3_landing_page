@@ -16,7 +16,7 @@ export function initGameAccessPage() {
 
   if (sessionBanner && sessionSummary && saved) {
     sessionSummary.textContent =
-      `Réservation enregistrée (${saved.reference}) pour ${saved.contactName} — retrait prévu le ${saved.pickupDay} (${saved.pickupSlot}), e-mail associé : ${saved.email}.`;
+      `Réservation enregistrée (${saved.reference}) pour ${saved.contactName}, retrait prévu le ${saved.pickupDay} (${saved.pickupSlot}), e-mail associé : ${saved.email}.`;
     sessionBanner.hidden = false;
   }
 

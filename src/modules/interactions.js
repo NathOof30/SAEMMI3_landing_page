@@ -70,34 +70,209 @@ export function initScrollReveal() {
 }
 
 /**
- * Accélère en douceur la rotation des rayons du composant Lot Mystère Switch
- * au survol souris ou au focus clavier sans saut d'angle.
+ * Gère la scène Lot Mystère Switch : accélération des rayons et changement de silhouette
+ * mystère au survol ou au focus des cartes de lots (jamais au survol direct de l'image).
  *
  * @returns {void}
  */
 export function initMysteryStage() {
+  const reducedMotion = prefersReducedMotion();
   const stages = document.querySelectorAll('.mystery-stage');
-  if (!stages.length || prefersReducedMotion()) return;
+  const prizeList = document.querySelector('[data-prize-list]');
+  const prizeTriggers = prizeList ? [...prizeList.querySelectorAll('[data-prize-trigger]')] : [];
+  const prizeSvgs = [...document.querySelectorAll('[data-mystery-prize]')];
+  const defaultPrize = 'grand-lot';
+
+  if (!stages.length) return;
+
+  const setStageSpeed = (stage, rate) => {
+    if (reducedMotion) return;
+    const starburst = stage.querySelector('.mystery-starburst-svg');
+    const anim = starburst?.getAnimations?.()[0];
+    if (anim && typeof anim.updatePlaybackRate === 'function') {
+      anim.updatePlaybackRate(rate);
+    }
+  };
+
+  const setActivePrize = (prizeId, previewing) => {
+    const targetPrize = prizeId || defaultPrize;
+
+    prizeSvgs.forEach((svg) => {
+      const isMatch = svg.getAttribute('data-mystery-prize') === targetPrize;
+      svg.classList.toggle('is-active', isMatch);
+      svg.setAttribute('aria-hidden', String(!isMatch));
+    });
+
+    prizeTriggers.forEach((trigger) => {
+      const isMatch = previewing && trigger.getAttribute('data-prize-trigger') === targetPrize;
+      trigger.classList.toggle('is-selected', isMatch);
+    });
+
+    stages.forEach((stage) => {
+      stage.setAttribute('data-active-prize', targetPrize);
+      stage.classList.toggle('is-previewing', Boolean(previewing));
+      setStageSpeed(stage, previewing ? 2.4 : 1);
+    });
+  };
 
   stages.forEach((stage) => {
-    const starburst = stage.querySelector('.mystery-starburst-svg');
-    if (!starburst) return;
-
-    const setSpeed = (rate) => {
-      const anim = starburst.getAnimations?.()[0];
-      if (anim && typeof anim.updatePlaybackRate === 'function') {
-        anim.updatePlaybackRate(rate);
-      }
-    };
-
     stage.addEventListener('pointerenter', (event) => {
       if (event.pointerType !== 'touch') {
-        setSpeed(2.4);
+        setStageSpeed(stage, 2.4);
       }
     });
-    stage.addEventListener('pointerleave', () => setSpeed(1));
-    stage.addEventListener('focusin', () => setSpeed(2.4));
-    stage.addEventListener('focusout', () => setSpeed(1));
+    stage.addEventListener('pointerleave', () => {
+      if (!stage.classList.contains('is-previewing')) {
+        setStageSpeed(stage, 1);
+      }
+    });
+  });
+
+  if (prizeList && prizeTriggers.length && prizeSvgs.length) {
+    const hoverCapable =
+      typeof window.matchMedia === 'function'
+        ? window.matchMedia('(hover: hover) and (pointer: fine)')
+        : null;
+
+    let activeTouchPrize = null;
+
+    prizeTriggers.forEach((trigger) => {
+      const prizeId = trigger.getAttribute('data-prize-trigger') || defaultPrize;
+
+      trigger.addEventListener('pointerenter', (event) => {
+        if (event.pointerType === 'touch') return;
+        activeTouchPrize = null;
+        setActivePrize(prizeId, true);
+      });
+
+      trigger.addEventListener('focusin', () => {
+        setActivePrize(prizeId, true);
+      });
+
+      trigger.addEventListener('click', (event) => {
+        const isTouchLike = event.pointerType === 'touch' || (hoverCapable && !hoverCapable.matches);
+        if (!isTouchLike) return;
+
+        if (activeTouchPrize === prizeId) {
+          activeTouchPrize = null;
+          setActivePrize(defaultPrize, false);
+        } else {
+          activeTouchPrize = prizeId;
+          setActivePrize(prizeId, true);
+        }
+      });
+    });
+
+    prizeList.addEventListener('pointerleave', (event) => {
+      if (event.pointerType === 'touch') return;
+      activeTouchPrize = null;
+      setActivePrize(defaultPrize, false);
+    });
+
+    prizeList.addEventListener('focusout', (event) => {
+      if (!prizeList.contains(event.relatedTarget)) {
+        setActivePrize(defaultPrize, false);
+      }
+    });
+  }
+}
+
+/**
+ * Anime en douceur l'ouverture et la fermeture des accordéons FAQ et disclosures (`.faq-details`).
+ *
+ * @returns {void}
+ */
+export function initFaqAccordion() {
+  const detailsList = document.querySelectorAll('.faq-details');
+  if (!detailsList.length || prefersReducedMotion()) return;
+
+  detailsList.forEach((details) => {
+    const summary = details.querySelector('summary');
+    const answer = details.querySelector('.faq-answer');
+    if (!summary || !answer || typeof answer.animate !== 'function') return;
+
+    let animation = null;
+    let isClosing = false;
+    let isExpanding = false;
+
+    const finishAnimation = (open) => {
+      details.open = open;
+      details.classList.remove('is-closing');
+      animation = null;
+      isClosing = false;
+      isExpanding = false;
+      answer.style.height = '';
+      answer.style.opacity = '';
+      answer.style.overflow = '';
+    };
+
+    const shrink = () => {
+      isClosing = true;
+      isExpanding = false;
+      details.classList.add('is-closing');
+
+      const startHeight = `${answer.offsetHeight}px`;
+      const startOpacity = Number(getComputedStyle(answer).opacity || 1);
+
+      if (animation) animation.cancel();
+
+      answer.style.overflow = 'hidden';
+      animation = answer.animate(
+        [
+          { height: startHeight, opacity: startOpacity },
+          { height: '0px', opacity: 0 },
+        ],
+        {
+          duration: 240,
+          easing: 'cubic-bezier(0.22, 1, 0.36, 1)',
+        },
+      );
+
+      animation.onfinish = () => finishAnimation(false);
+      animation.oncancel = () => {
+        isClosing = false;
+      };
+    };
+
+    const expand = () => {
+      isExpanding = true;
+      isClosing = false;
+      details.classList.remove('is-closing');
+
+      const startHeight = details.open ? `${answer.offsetHeight}px` : '0px';
+      const startOpacity = details.open ? Number(getComputedStyle(answer).opacity || 1) : 0;
+
+      if (animation) animation.cancel();
+
+      details.open = true;
+      answer.style.overflow = 'hidden';
+      const endHeight = `${answer.scrollHeight}px`;
+
+      animation = answer.animate(
+        [
+          { height: startHeight, opacity: startOpacity },
+          { height: endHeight, opacity: 1 },
+        ],
+        {
+          duration: 280,
+          easing: 'cubic-bezier(0.22, 1, 0.36, 1)',
+        },
+      );
+
+      animation.onfinish = () => finishAnimation(true);
+      animation.oncancel = () => {
+        isExpanding = false;
+      };
+    };
+
+    summary.addEventListener('click', (event) => {
+      event.preventDefault();
+      if (isClosing || !details.open) {
+        expand();
+      } else if (isExpanding || details.open) {
+        shrink();
+      }
+    });
   });
 }
 

@@ -57,6 +57,9 @@ export function initReservationForm() {
       if (field && typeof field.setCustomValidity === 'function') {
         field.setCustomValidity('');
       }
+      if (field) {
+        field.removeAttribute('aria-invalid');
+      }
     });
     if (errorEl) {
       errorEl.hidden = true;
@@ -84,6 +87,12 @@ export function initReservationForm() {
     const email = validateEmailField(emailInput);
 
     if (!form.checkValidity()) {
+      [contactInput, emailInput, daySelect, slotSelect, sizeSelect, consentCheckbox].forEach((field) => {
+        if (field && !field.checkValidity()) {
+          field.setAttribute('aria-invalid', 'true');
+        }
+      });
+
       const firstInvalid = form.querySelector(':invalid');
       const message =
         firstInvalid?.validationMessage ||

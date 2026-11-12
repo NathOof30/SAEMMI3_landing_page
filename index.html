@@ -14,10 +14,33 @@
   <meta property="og:description"
     content="Réservez votre kit d'explorateur gratuit à l'Office de Tourisme de Lens-Liévin, explorez la ville en famille sur un ou plusieurs jours et tentez de remporter l'édition collector Dobble Édition Lens.">
   <link rel="icon" type="image/svg+xml" href="./icon.svg">
+  <meta name="color-scheme" content="light dark">
   <link rel="preconnect" href="https://use.typekit.net" crossorigin>
   <link rel="preconnect" href="https://p.typekit.net" crossorigin>
   <link rel="stylesheet" href="https://use.typekit.net/msd2zjt.css">
   <link rel="stylesheet" href="./src/styles/main.css">
+  <script>
+    (function () {
+      try {
+        var prefs = {};
+        try {
+          var raw = localStorage.getItem('expeditionA11yPrefs');
+          prefs = (raw ? JSON.parse(raw) : {}) || {};
+        } catch (e) {}
+        var root = document.documentElement;
+        var sysDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        var sysReduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        var theme = prefs.theme === 'dark' || prefs.theme === 'light' ? prefs.theme : (sysDark ? 'dark' : 'light');
+        var textSize = prefs.textSize === 'large' || prefs.textSize === 'xlarge' ? prefs.textSize : 'normal';
+        var motion = prefs.motion === 'reduce' || prefs.motion === 'no-preference' ? prefs.motion : (sysReduce ? 'reduce' : 'no-preference');
+        var reading = prefs.reading === true ? 'enhanced' : 'normal';
+        root.setAttribute('data-theme', theme);
+        root.setAttribute('data-text-size', textSize);
+        root.setAttribute('data-motion', motion);
+        root.setAttribute('data-reading', reading);
+      } catch (e) {}
+    })();
+  </script>
   <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -59,14 +82,14 @@
 
   <!-- [0] En-tête -->
   <header class="site-header">
-    <div class="max-w-[1200px] mx-auto px-4 sm:px-6 min-h-[60px] md:min-h-[68px] flex items-center justify-between gap-3">
+    <div class="max-w-[1200px] mx-auto px-4 sm:px-6 min-h-[60px] md:min-h-[68px] py-1.5 flex flex-wrap items-center justify-between gap-2 sm:gap-3">
       <div class="flex items-center gap-3 min-w-0">
         <a href="./index.html"
-          class="display-title text-[17px] sm:text-xl text-blood no-underline hover:text-ink transition-colors whitespace-nowrap"
+          class="display-title text-[1.0625rem] sm:text-xl text-blood no-underline hover:text-ink transition-colors whitespace-nowrap truncate"
           aria-label="Accueil, L'Expédition Secrète Lens">
           <strong>L'Expédition Secrète</strong>
         </a>
-        <p class="hidden md:inline-flex lg:hidden xl:inline-flex items-center gap-2 bg-white border-2 border-ink rounded-full px-3 py-1 shrink-0 m-0">
+        <p class="partner-pill hidden md:inline-flex lg:hidden xl:inline-flex items-center gap-2 bg-white border-2 border-ink rounded-full px-3 py-1 shrink-0 m-0">
           <span class="sr-only">Partenaires officiels :</span>
           <img src="./lens-tourisme-logo-e1673958887436.webp" alt="Logo Lens Liévin Tourisme" width="115" height="40"
             class="h-5 w-auto object-contain">
@@ -77,7 +100,7 @@
       </div>
 
       <nav aria-label="Navigation principale" class="hidden lg:block">
-        <ul class="flex items-center gap-5 xl:gap-7 text-sm font-extrabold text-ink list-none m-0 p-0">
+        <ul class="flex items-center gap-4 xl:gap-6 text-sm font-extrabold text-ink list-none m-0 p-0">
           <li><a href="#aventure" class="hover:text-blood transition-colors no-underline whitespace-nowrap">L'aventure</a></li>
           <li><a href="#lens" class="hover:text-blood transition-colors no-underline whitespace-nowrap">Lens en jeu</a></li>
           <li><a href="#collab" class="hover:text-blood transition-colors no-underline whitespace-nowrap">Collector &amp; Lots</a></li>
@@ -85,20 +108,49 @@
         </ul>
       </nav>
 
-      <div class="flex items-center gap-3 sm:gap-4 shrink-0">
+      <div class="flex items-center gap-2 sm:gap-3 shrink-0">
         <a href="./acces-jeu.html"
           class="hidden md:inline-block text-sm font-extrabold text-ink underline decoration-2 underline-offset-4 hover:text-blood whitespace-nowrap">
           Déjà un kit ?
         </a>
+        <div id="a11y-widget" class="md:hidden">
+          <button type="button" id="a11y-toggle-btn"
+            class="a11y-toggle-btn inline-flex items-center justify-center gap-1.5 min-h-[40px] min-w-[40px] px-2.5 py-1.5 rounded-xl border-2 border-ink bg-surface text-ink text-xs sm:text-sm font-extrabold cursor-pointer hover:bg-gold-soft transition-colors whitespace-nowrap"
+            aria-expanded="false" aria-controls="a11y-panel" aria-label="Options d'accessibilité" title="Options d'accessibilité">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+              stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="shrink-0">
+              <circle cx="12" cy="5" r="2" />
+              <path d="M5 9h14" />
+              <path d="M12 9v6" />
+              <path d="M9 21l3-6 3 6" />
+            </svg>
+          </button>
+        </div>
         <a href="#inscription"
-          class="btn-expedition btn-expedition--gold btn-expedition--sm !px-3 sm:!px-4 !text-[13px] sm:!text-[14px] whitespace-nowrap">
-          Réserver notre kit
+          class="btn-expedition btn-expedition--gold btn-expedition--sm !px-3 sm:!px-4 !text-[0.8125rem] sm:!text-sm whitespace-nowrap">
+          Réserver<span class="hidden sm:inline"> notre</span> kit
         </a>
       </div>
     </div>
   </header>
 
-  <main id="main-content">
+  <!-- Pastille d'accessibilité flottante (PC >= 768px) -->
+  <aside id="a11y-floating-widget" aria-label="Accessibilité" class="a11y-floating hidden md:block">
+    <button type="button" id="a11y-floating-toggle-btn"
+      class="a11y-toggle-btn a11y-floating-pill"
+      aria-expanded="false" aria-controls="a11y-panel" aria-label="Options d'accessibilité" title="Options d'accessibilité">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+        stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="shrink-0">
+        <circle cx="12" cy="5" r="2" />
+        <path d="M5 9h14" />
+        <path d="M12 9v6" />
+        <path d="M9 21l3-6 3 6" />
+      </svg>
+      <span>Accessibilité</span>
+    </button>
+  </aside>
+
+  <main id="main-content" tabindex="-1">
     <!-- [1] Hero -->
     <section id="hero" class="bg-expedition-paper pt-6 md:pt-8 pb-0 overflow-x-clip"
       aria-labelledby="hero-title">
@@ -108,7 +160,7 @@
             LENS DEVIENT VOTRE <span class="hero-highlight">TERRAIN D'AVENTURE</span> EN FAMILLE
           </h1>
 
-          <p class="text-[17px] sm:text-lg text-text-muted max-w-[56ch] mb-7 leading-relaxed">
+          <p class="text-[1.0625rem] sm:text-lg text-text-muted max-w-[56ch] mb-7 leading-relaxed">
             Partez à la recherche de <strong class="text-ink">6 fragments de clé</strong> à travers Lens grâce à un
             <strong class="text-ink">vrai kit d'explorateur</strong> (grande carte papier illustrée et loupe) et votre téléphone.
             À la clé : l'édition collector limitée <strong class="text-ink">Dobble Édition Lens</strong> et votre entrée
@@ -128,7 +180,7 @@
           </div>
 
           <ul aria-label="Points clés de l'expédition"
-            class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-[13px] sm:text-sm text-ink list-none p-0 m-0">
+            class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-[0.8125rem] sm:text-sm text-ink list-none p-0 m-0">
             <li class="flex items-start gap-2.5 bg-white/90 border-2 border-ink/20 rounded-xl px-3.5 py-2.5">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#841818" stroke-width="2.2"
                 stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="shrink-0 mt-0.5">
@@ -172,7 +224,7 @@
         <aside class="hero-collage" aria-label="Aperçu visuel du kit et de l'expérience">
           <h2 class="sr-only">Aperçu du dispositif hybride</h2>
 
-          <figure class="hero-collage__photo hero-parallax-layer card-l1--offset !bg-white !p-3 sm:!p-3.5 m-0 lg:ml-auto"
+          <figure class="hero-collage__photo hero-parallax-layer card-l1--offset bg-white !p-3 sm:!p-3.5 m-0 lg:ml-auto"
             data-parallax="0.6">
             <img src="./images/famille_carte.webp"
               alt="Une mère et ses deux enfants lisent ensemble une grande carte papier en pleine nature lors de l'expédition"
@@ -310,11 +362,11 @@
                 class="w-full h-auto block rounded-lg border border-ink/20">
             </figure>
 
-            <h3 id="poster-heading" class="display-title text-2xl sm:text-[26px] text-blood mb-3">
+            <h3 id="poster-heading" class="display-title text-2xl sm:text-[1.625rem] text-blood mb-3">
               QUAND LE PATRIMOINE RENCONTRE LE JEU
             </h3>
 
-            <p class="text-[15px] text-text-muted leading-relaxed mb-4">
+            <p class="text-[0.9375rem] text-text-muted leading-relaxed mb-4">
               Destination Lens-Liévin Tourisme et Asmodee s'associent le temps d'une édition éphémère pour transformer
               Lens en grand jeu de piste grandeur nature, culturel, convivial et accessible à toutes les familles.
             </p>
@@ -335,13 +387,16 @@
               </div>
             </details>
 
-            <p class="flex flex-wrap items-center gap-3 pt-4 border-t-2 border-ink/15 m-0">
-              <img src="./lens-tourisme-logo-e1673958887436.webp" alt="Logo Lens Liévin Tourisme" width="115" height="40"
-                loading="lazy" class="h-8 w-auto object-contain">
-              <span aria-hidden="true" class="text-sm font-extrabold text-ink">×</span>
-              <img src="./asmodee_logo.webp" alt="Logo Asmodee" width="92" height="40" loading="lazy"
-                class="h-7 w-auto object-contain">
-            </p>
+            <div class="pt-4 border-t-2 border-ink/15">
+              <p class="partner-pill inline-flex flex-wrap items-center gap-3 bg-white border-2 border-ink rounded-xl px-3.5 py-2 m-0">
+                <span class="sr-only">Partenaires officiels :</span>
+                <img src="./lens-tourisme-logo-e1673958887436.webp" alt="Logo Lens Liévin Tourisme" width="115" height="40"
+                  loading="lazy" class="h-8 w-auto object-contain">
+                <span aria-hidden="true" class="text-sm font-extrabold text-ink">×</span>
+                <img src="./asmodee_logo.webp" alt="Logo Asmodee" width="92" height="40" loading="lazy"
+                  class="h-7 w-auto object-contain">
+              </p>
+            </div>
           </article>
         </div>
       </div>
@@ -359,7 +414,7 @@
           aria-labelledby="legend-title" data-reveal>
           <div class="flex items-center gap-4 md:flex-col md:items-center md:text-center md:w-44 shrink-0">
             <div class="w-16 h-16 rounded-2xl bg-gold-soft border-2 border-ink flex items-center justify-center shadow-[0_3px_0_#1A1A1A] shrink-0">
-              <svg viewBox="0 0 32 32" width="42" height="42" fill="none" aria-hidden="true">
+              <svg class="lantern-svg" viewBox="0 0 32 32" width="42" height="42" fill="none" aria-hidden="true">
                 <path d="M11 6 H21" stroke="#1A1A1A" stroke-width="2.4" stroke-linecap="round" />
                 <path d="M13 6 V9 H19 V6" stroke="#1A1A1A" stroke-width="2" fill="#9CA3AF" />
                 <rect x="9" y="9" width="14" height="14" rx="3" fill="#FFFBEB" stroke="#1A1A1A" stroke-width="2.2" />
@@ -375,7 +430,7 @@
           </div>
 
           <blockquote class="card-l3 flex-1 m-0">
-            <p class="text-ink text-[15px] sm:text-base leading-relaxed m-0">
+            <p class="text-ink text-[0.9375rem] sm:text-base leading-relaxed m-0">
               <strong>L'histoire à vivre ensemble :</strong> dans le grenier de son grand-père mineur, le jeune
               <strong>Gali</strong> a retrouvé une note jaunie, une loupe et la pièce de départ d'une
               <strong>clé antique</strong> censée rallumer la légendaire <strong>Lampe Cœur</strong>, une gaillette
@@ -405,7 +460,7 @@
                 </div>
               </div>
 
-              <ul class="space-y-3 text-text-muted text-[15px] leading-relaxed list-none p-0 m-0">
+              <ul class="space-y-3 text-text-muted text-[0.9375rem] leading-relaxed list-none p-0 m-0">
                 <li class="flex items-start gap-2.5">
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#841818" stroke-width="2.5"
                     stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="shrink-0 mt-1">
@@ -446,7 +501,7 @@
                 </div>
               </div>
 
-              <ul class="space-y-3 text-text-muted text-[15px] leading-relaxed list-none p-0 m-0">
+              <ul class="space-y-3 text-text-muted text-[0.9375rem] leading-relaxed list-none p-0 m-0">
                 <li class="flex items-start gap-2.5">
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#841818" stroke-width="2.5"
                     stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="shrink-0 mt-1">
@@ -486,7 +541,7 @@
               <span class="display-title inline-flex items-center justify-center w-12 h-10 rounded-xl bg-blood text-gold border-2 border-ink text-xl mb-3"
                 aria-hidden="true">01</span>
               <h3 class="font-extrabold text-lg text-ink mb-2">Réservez &amp; retirez votre kit</h3>
-              <p class="text-text-muted text-[15px] leading-relaxed m-0">
+              <p class="text-text-muted text-[0.9375rem] leading-relaxed m-0">
                 Inscrivez votre e-mail en ligne, choisissez votre jour de passage entre le 5 et le 18 juillet 2027 et
                 récupérez gratuitement votre carte papier illustrée et votre loupe à l'Office de Tourisme de Lens-Liévin
                 (16 Place Jean-Jaurès). Vous recevez le lien d'accès à l'application par e-mail dès le lancement de
@@ -497,7 +552,7 @@
               <span class="display-title inline-flex items-center justify-center w-12 h-10 rounded-xl bg-blood text-gold border-2 border-ink text-xl mb-3"
                 aria-hidden="true">02</span>
               <h3 class="font-extrabold text-lg text-ink mb-2">Cherchez à la loupe &amp; scannez la carte</h3>
-              <p class="text-text-muted text-[15px] leading-relaxed m-0">
+              <p class="text-text-muted text-[0.9375rem] leading-relaxed m-0">
                 L'application affiche l'énigme de Gali sans révéler le nom du lieu. L'enfant repère l'endroit sur la grande
                 carte papier grâce à sa loupe ; vous scannez le QR code imprimé sur la carte pour activer la destination.
               </p>
@@ -506,7 +561,7 @@
               <span class="display-title inline-flex items-center justify-center w-12 h-10 rounded-xl bg-blood text-gold border-2 border-ink text-xl mb-3"
                 aria-hidden="true">03</span>
               <h3 class="font-extrabold text-lg text-ink mb-2">Suivez la boussole &amp; jouez sur place</h3>
-              <p class="text-text-muted text-[15px] leading-relaxed m-0">
+              <p class="text-text-muted text-[0.9375rem] leading-relaxed m-0">
                 Marchez vers la cible en suivant la pointe dorée, ou empruntez librement le
                 <strong class="text-ink">réseau de bus Tadao, gratuit pour tous</strong>. Retrouvez l'animateur de l'étape pour relever
                 un mini-défi familial et scannez son badge pour décrocher un <strong class="text-ink">fragment de clé en or</strong>.
@@ -516,7 +571,7 @@
               <span class="display-title inline-flex items-center justify-center w-12 h-10 rounded-xl bg-blood text-gold border-2 border-ink text-xl mb-3"
                 aria-hidden="true">04</span>
               <h3 class="font-extrabold text-lg text-ink mb-2">Reforgez la clé &amp; ouvrez le coffre</h3>
-              <p class="text-text-muted text-[15px] leading-relaxed m-0">
+              <p class="text-text-muted text-[0.9375rem] leading-relaxed m-0">
                 À votre rythme sur une journée ou plusieurs jours grâce à la sauvegarde en ligne, assemblez les
                 6 fragments pour rallumer la <strong class="text-ink">Lampe Cœur</strong>. Présentez votre QR code trésor à l'Office de
                 Tourisme pour repartir avec l'édition collector et valider votre
@@ -578,7 +633,7 @@
                   fill="#D1D5DB" stroke="#6B7280" stroke-width="1.8" stroke-linejoin="round" />
               </g>
             </svg>
-            <p id="key-forge-status" class="card-l3 text-xs sm:text-[13px] font-semibold text-amber-text-deep mt-4 mb-0 text-left">
+            <p id="key-forge-status" class="card-l3 text-xs sm:text-[0.8125rem] font-semibold text-amber-text-deep mt-4 mb-0 text-left">
               La pièce de départ trouvée dans le grenier est déjà dorée ; les 6 fragments s'assemblent au fil de vos escales
               à Lens.
             </p>
@@ -593,13 +648,13 @@
         <h2 id="lens-title" class="display-title text-3xl sm:text-4xl text-ink mb-3">
           Lens autrement : une sortie culturelle mais ludique
         </h2>
-        <p class="text-ink font-semibold text-base sm:text-[17px] max-w-[65ch] mb-8">
+        <p class="text-ink font-semibold text-base sm:text-[1.0625rem] max-w-[65ch] mb-8">
           Entre patrimoine mondial, architecture Art déco et lieux emblématiques du territoire, voici un aperçu des
           ambiances que votre famille explorera au fil de l'expédition, volontairement présentées dans le désordre
           pour préserver tout le plaisir de la découverte le jour J.
         </p>
 
-        <ul class="lens-carousel list-none">
+        <ul id="lens-carousel" class="lens-carousel list-none" aria-label="Ambiances de Lens">
           <li class="lg:col-span-7">
             <article class="card-l1 lens-tile !bg-parchment w-full flex flex-col justify-between !p-5" data-reveal>
               <div>
@@ -610,12 +665,12 @@
                     class="lens-tile-media w-full h-full object-cover object-center block">
                 </figure>
                 <h3 class="font-extrabold text-lg text-ink mb-1.5">Le Louvre-Lens &amp; son parc</h3>
-                <p class="text-text-muted text-[15px] mb-4">
+                <p class="text-text-muted text-[0.9375rem] mb-4">
                   Quand l'art contemporain rayonne sur une ancienne fosse minière.
                 </p>
               </div>
               <p class="m-0">
-                <small class="lens-tile-tag inline-block bg-white border-2 border-ink rounded-full px-3 py-1 text-[11px] font-extrabold tracking-wider text-ink uppercase">
+                <small class="lens-tile-tag inline-block bg-white border-2 border-ink rounded-full px-3 py-1 text-[0.6875rem] font-extrabold tracking-wider text-ink uppercase">
                   PATRIMOINE • LENS
                 </small>
               </p>
@@ -633,12 +688,12 @@
                     class="lens-tile-media w-full h-full object-cover object-[center_62%] block">
                 </figure>
                 <h3 class="font-extrabold text-lg text-ink mb-1.5">Les sommets du bassin minier</h3>
-                <p class="text-text-muted text-[15px] mb-4">
+                <p class="text-text-muted text-[0.9375rem] mb-4">
                   Prendre de la hauteur du côté des terrils de Loos-en-Gohelle, classés à l'UNESCO.
                 </p>
               </div>
               <p class="m-0">
-                <small class="lens-tile-tag inline-block bg-white border-2 border-ink rounded-full px-3 py-1 text-[11px] font-extrabold tracking-wider text-ink uppercase">
+                <small class="lens-tile-tag inline-block bg-white border-2 border-ink rounded-full px-3 py-1 text-[0.6875rem] font-extrabold tracking-wider text-ink uppercase">
                   NATURE &amp; UNESCO
                 </small>
               </p>
@@ -655,12 +710,12 @@
                     class="lens-tile-media w-full h-full object-cover object-center block">
                 </figure>
                 <h3 class="font-extrabold text-lg text-ink mb-1.5">La ferveur Sang et Or</h3>
-                <p class="text-text-muted text-[15px] mb-4">
+                <p class="text-text-muted text-[0.9375rem] mb-4">
                   Découvrir l'âme populaire et chaleureuse autour du stade Bollaert-Delelis.
                 </p>
               </div>
               <p class="m-0">
-                <small class="lens-tile-tag inline-block bg-white border-2 border-ink rounded-full px-3 py-1 text-[11px] font-extrabold tracking-wider text-ink uppercase">
+                <small class="lens-tile-tag inline-block bg-white border-2 border-ink rounded-full px-3 py-1 text-[0.6875rem] font-extrabold tracking-wider text-ink uppercase">
                   CULTURE POPULAIRE • LENS
                 </small>
               </p>
@@ -678,12 +733,12 @@
                     class="lens-tile-media w-full h-full object-cover object-center block">
                 </figure>
                 <h3 class="font-extrabold text-lg text-ink mb-1.5">Place Jean-Jaurès &amp; Office de Tourisme</h3>
-                <p class="text-text-muted text-[15px] mb-4">
+                <p class="text-text-muted text-[0.9375rem] mb-4">
                   Le camp de base chaleureux pour lancer et fêter votre expédition.
                 </p>
               </div>
               <p class="m-0">
-                <small class="lens-tile-tag inline-block bg-white border-2 border-ink rounded-full px-3 py-1 text-[11px] font-extrabold tracking-wider text-ink uppercase">
+                <small class="lens-tile-tag inline-block bg-white border-2 border-ink rounded-full px-3 py-1 text-[0.6875rem] font-extrabold tracking-wider text-ink uppercase">
                   ACCUEIL • LENS
                 </small>
               </p>
@@ -700,12 +755,12 @@
                     class="lens-tile-media w-full h-full object-cover object-[center_42%] block">
                 </figure>
                 <h3 class="font-extrabold text-lg text-ink mb-1.5">Façades Art déco &amp; cœur de ville</h3>
-                <p class="text-text-muted text-[15px] mb-4">
+                <p class="text-text-muted text-[0.9375rem] mb-4">
                   Lever les yeux sur les briques sculptées et la mémoire des corons.
                 </p>
               </div>
               <p class="m-0">
-                <small class="lens-tile-tag inline-block bg-white border-2 border-ink rounded-full px-3 py-1 text-[11px] font-extrabold tracking-wider text-ink uppercase">
+                <small class="lens-tile-tag inline-block bg-white border-2 border-ink rounded-full px-3 py-1 text-[0.6875rem] font-extrabold tracking-wider text-ink uppercase">
                   ARCHITECTURE • LENS
                 </small>
               </p>
@@ -723,12 +778,12 @@
                     class="lens-tile-media w-full h-full object-cover object-[center_58%] block">
                 </figure>
                 <h3 class="font-extrabold text-lg text-ink mb-1.5">Une gare hors du commun</h3>
-                <p class="text-text-muted text-[15px] mb-4">
+                <p class="text-text-muted text-[0.9375rem] mb-4">
                   La Gare de Lens, un monument emblématique des années 1920 au charme ferroviaire unique.
                 </p>
               </div>
               <p class="m-0">
-                <small class="lens-tile-tag inline-block bg-white border-2 border-ink rounded-full px-3 py-1 text-[11px] font-extrabold tracking-wider text-ink uppercase">
+                <small class="lens-tile-tag inline-block bg-white border-2 border-ink rounded-full px-3 py-1 text-[0.6875rem] font-extrabold tracking-wider text-ink uppercase">
                   HISTOIRE • LENS
                 </small>
               </p>
@@ -736,14 +791,30 @@
           </li>
         </ul>
 
-        <p class="md:hidden text-xs font-extrabold text-ink mt-2 mb-0 flex items-center gap-1.5">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3"
-            stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <line x1="5" y1="12" x2="19" y2="12" />
-            <polyline points="12 5 19 12 12 19" />
-          </svg>
-          <span>Faites glisser horizontalement pour parcourir les 6 ambiances.</span>
-        </p>
+        <div class="md:hidden flex items-center justify-between gap-3 mt-3">
+          <p class="text-xs font-extrabold text-ink m-0 flex items-center gap-1.5">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3"
+              stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <line x1="5" y1="12" x2="19" y2="12" />
+              <polyline points="12 5 19 12 12 19" />
+            </svg>
+            <span>Glissez ou utilisez les boutons pour parcourir les 6 ambiances.</span>
+          </p>
+          <div class="flex items-center gap-2 shrink-0">
+            <button type="button" id="lens-carousel-prev" class="lens-carousel-nav-btn" aria-label="Lieu précédent">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <polyline points="15 18 9 12 15 6" />
+              </svg>
+            </button>
+            <button type="button" id="lens-carousel-next" class="lens-carousel-nav-btn" aria-label="Lieu suivant">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <polyline points="9 18 15 12 9 6" />
+              </svg>
+            </button>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -771,7 +842,7 @@
             REPARTEZ AVEC LE <span class="text-gold">DOBBLE ÉDITION COLLECTOR LENS</span>
           </h2>
 
-          <ul class="space-y-4 text-[#FFFBEB] text-[15px] sm:text-base leading-relaxed list-none p-0 m-0 mb-8">
+          <ul class="space-y-4 text-[#FFFBEB] text-[0.9375rem] sm:text-base leading-relaxed list-none p-0 m-0 mb-8">
             <li class="flex items-start gap-3">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F4B316" stroke-width="2.6"
                 stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="shrink-0 mt-0.5">
@@ -1022,32 +1093,44 @@
             TERMINEZ L'EXPÉDITION, <span class="text-gold">PARTICIPEZ AU GRAND TIRAGE AU SORT !</span>
           </h2>
 
-          <p class="text-[#E5E7EB] text-[15px] sm:text-base leading-relaxed mb-6 max-w-[58ch]">
+          <p class="text-[#E5E7EB] text-[0.9375rem] sm:text-base leading-relaxed mb-6 max-w-[58ch]">
             Dès que votre équipe réunit les 6 fragments de clé et rallume la Lampe Cœur, elle est
             <strong class="text-white">automatiquement inscrite</strong> au grand tirage au sort avec l'adresse e-mail de l'équipe.
             <strong class="text-white">Aucun bulletin papier à remplir.</strong>
           </p>
 
           <ul aria-label="Dotation du grand tirage au sort" class="grid grid-cols-1 gap-3.5 list-none p-0 m-0 mb-6" data-prize-list>
-            <li class="prize-card bg-[#161616] border border-white/25 rounded-[14px] p-4 sm:p-5" data-prize-trigger="grand-lot" tabindex="0">
+            <li class="prize-card bg-[#161616] border border-white/25 rounded-[14px] p-4 sm:p-5">
               <article>
-                <h3 class="font-extrabold text-base text-gold mb-1">Grand Lot Mystère (1er prix)</h3>
+                <h3 class="font-extrabold text-base text-gold mb-1">
+                  <button type="button" class="prize-card__btn" data-prize-trigger="grand-lot" aria-pressed="false">
+                    Grand Lot Mystère (1er prix)
+                  </button>
+                </h3>
                 <p class="text-sm text-[#E5E7EB] leading-relaxed m-0">
                   Des billets pour toute votre équipe dans un célèbre parc d'attractions non loin de Lens, pour une journée d'aventure et de sensations fortes.
                 </p>
               </article>
             </li>
-            <li class="prize-card bg-[#161616] border border-white/25 rounded-[14px] p-4 sm:p-5" data-prize-trigger="coffrets" tabindex="0">
+            <li class="prize-card bg-[#161616] border border-white/25 rounded-[14px] p-4 sm:p-5">
               <article>
-                <h3 class="font-extrabold text-base text-gold mb-1">Coffrets de jeux Asmodee (5 lots)</h3>
+                <h3 class="font-extrabold text-base text-gold mb-1">
+                  <button type="button" class="prize-card__btn" data-prize-trigger="coffrets" aria-pressed="false">
+                    Coffrets de jeux Asmodee (5 lots)
+                  </button>
+                </h3>
                 <p class="text-sm text-[#E5E7EB] leading-relaxed m-0">
                   Une sélection de jeux de société familiaux Asmodee pour prolonger vos soirées jeux à la maison.
                 </p>
               </article>
             </li>
-            <li class="prize-card bg-[#161616] border border-white/25 rounded-[14px] p-4 sm:p-5" data-prize-trigger="paniers" tabindex="0">
+            <li class="prize-card bg-[#161616] border border-white/25 rounded-[14px] p-4 sm:p-5">
               <article>
-                <h3 class="font-extrabold text-base text-gold mb-1">Paniers Découverte Lens Tourisme (10 lots)</h3>
+                <h3 class="font-extrabold text-base text-gold mb-1">
+                  <button type="button" class="prize-card__btn" data-prize-trigger="paniers" aria-pressed="false">
+                    Paniers Découverte Lens Tourisme (10 lots)
+                  </button>
+                </h3>
                 <p class="text-sm text-[#E5E7EB] leading-relaxed m-0">
                   Entrées familiales pour des visites culturelles du bassin minier, carnets souvenirs et spécialités
                   locales.
@@ -1055,9 +1138,10 @@
               </article>
             </li>
           </ul>
+          <p id="mystery-stage-status" class="sr-only" aria-live="polite"></p>
 
           <p class="m-0">
-            <small class="text-[#D1D5DB] text-xs sm:text-[13px] leading-relaxed block">
+            <small class="text-[#D1D5DB] text-xs sm:text-[0.8125rem] leading-relaxed block">
               Participation gratuite sans obligation d'achat dès l'expédition complétée. Tirage au sort le
               <strong class="text-white">jeudi 22 juillet 2027 à 14h00</strong> à l'Office de Tourisme de Lens-Liévin.
               <a href="./reglement-concours.html" class="text-gold font-bold underline underline-offset-2 hover:text-white">
@@ -1185,7 +1269,7 @@
 
           <div class="space-y-3.5">
             <details open class="faq-details card-l2 !p-0 overflow-hidden">
-              <summary class="px-5 py-4 flex items-center justify-between gap-4 font-extrabold text-[15px] sm:text-base text-ink hover:bg-parchment-light transition-colors">
+              <summary class="px-5 py-4 flex items-center justify-between gap-4 font-extrabold text-[0.9375rem] sm:text-base text-ink hover:bg-parchment-light transition-colors">
                 <span>Faut-il télécharger une application sur App Store ou Google Play ?</span>
                 <svg class="faq-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                   stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -1193,7 +1277,7 @@
                 </svg>
               </summary>
               <div class="faq-answer">
-                <p class="px-5 pb-4 pt-3 border-t border-ink/15 text-[15px] text-text-muted leading-relaxed m-0">
+                <p class="px-5 pb-4 pt-3 border-t border-ink/15 text-[0.9375rem] text-text-muted leading-relaxed m-0">
                   Non. Tout fonctionne directement dans le navigateur de votre téléphone (Chrome ou Safari) grâce au lien
                   d'accès envoyé par e-mail au démarrage de l'événement (et via le QR code imprimé dans votre kit papier).
                 </p>
@@ -1201,7 +1285,7 @@
             </details>
 
             <details class="faq-details card-l2 !p-0 overflow-hidden">
-              <summary class="px-5 py-4 flex items-center justify-between gap-4 font-extrabold text-[15px] sm:text-base text-ink hover:bg-parchment-light transition-colors">
+              <summary class="px-5 py-4 flex items-center justify-between gap-4 font-extrabold text-[0.9375rem] sm:text-base text-ink hover:bg-parchment-light transition-colors">
                 <span>Que se passe-t-il si le réseau mobile capte mal pendant le parcours ?</span>
                 <svg class="faq-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                   stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -1209,7 +1293,7 @@
                 </svg>
               </summary>
               <div class="faq-answer">
-                <p class="px-5 pb-4 pt-3 border-t border-ink/15 text-[15px] text-text-muted leading-relaxed m-0">
+                <p class="px-5 pb-4 pt-3 border-t border-ink/15 text-[0.9375rem] text-text-muted leading-relaxed m-0">
                   La boussole et l'affichage de la distance continuent de fonctionner hors ligne entre deux monuments ; seule
                   la validation des QR codes utilise Internet.
                 </p>
@@ -1217,7 +1301,7 @@
             </details>
 
             <details class="faq-details card-l2 !p-0 overflow-hidden">
-              <summary class="px-5 py-4 flex items-center justify-between gap-4 font-extrabold text-[15px] sm:text-base text-ink hover:bg-parchment-light transition-colors">
+              <summary class="px-5 py-4 flex items-center justify-between gap-4 font-extrabold text-[0.9375rem] sm:text-base text-ink hover:bg-parchment-light transition-colors">
                 <span>Le parcours est-il adapté aux jeunes enfants, aux poussettes et aux trajets en bus ?</span>
                 <svg class="faq-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                   stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -1225,7 +1309,7 @@
                 </svg>
               </summary>
               <div class="faq-answer">
-                <p class="px-5 pb-4 pt-3 border-t border-ink/15 text-[15px] text-text-muted leading-relaxed m-0">
+                <p class="px-5 pb-4 pt-3 border-t border-ink/15 text-[0.9375rem] text-text-muted leading-relaxed m-0">
                   Oui. Le cœur de ville, la Gare, les abords du stade Bollaert-Delelis et le parc du Louvre-Lens sont
                   accessibles à pied et en poussette. Pour l'étape des terrils de Loos-en-Gohelle, le point de rendez-vous
                   de l'animateur se situe sur l'esplanade stabilisée au pied des terrils (accessible en poussette
@@ -1236,7 +1320,7 @@
             </details>
 
             <details class="faq-details card-l2 !p-0 overflow-hidden">
-              <summary class="px-5 py-4 flex items-center justify-between gap-4 font-extrabold text-[15px] sm:text-base text-ink hover:bg-parchment-light transition-colors">
+              <summary class="px-5 py-4 flex items-center justify-between gap-4 font-extrabold text-[0.9375rem] sm:text-base text-ink hover:bg-parchment-light transition-colors">
                 <span>Peut-on faire une pause en route ou réaliser l'aventure sur plusieurs jours ?</span>
                 <svg class="faq-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                   stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -1244,7 +1328,7 @@
                 </svg>
               </summary>
               <div class="faq-answer">
-                <p class="px-5 pb-4 pt-3 border-t border-ink/15 text-[15px] text-text-muted leading-relaxed m-0">
+                <p class="px-5 pb-4 pt-3 border-t border-ink/15 text-[0.9375rem] text-text-muted leading-relaxed m-0">
                   Oui, tout à fait. Votre progression (fragments de clé déjà forgés et anecdotes historiques débloquées) reste
                   enregistrée sur votre compte d'équipe pendant toute la durée de l'événement, du 5 au 18 juillet 2027. Vous
                   pouvez ainsi faire une pause gourmande ou étaler l'expédition sur plusieurs jours à votre rythme.
@@ -1253,7 +1337,7 @@
             </details>
 
             <details class="faq-details card-l2 !p-0 overflow-hidden">
-              <summary class="px-5 py-4 flex items-center justify-between gap-4 font-extrabold text-[15px] sm:text-base text-ink hover:bg-parchment-light transition-colors">
+              <summary class="px-5 py-4 flex items-center justify-between gap-4 font-extrabold text-[0.9375rem] sm:text-base text-ink hover:bg-parchment-light transition-colors">
                 <span>Que faire en cas de pluie ou de mauvais temps ?</span>
                 <svg class="faq-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                   stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -1261,7 +1345,7 @@
                 </svg>
               </summary>
               <div class="faq-answer">
-                <p class="px-5 pb-4 pt-3 border-t border-ink/15 text-[15px] text-text-muted leading-relaxed m-0">
+                <p class="px-5 pb-4 pt-3 border-t border-ink/15 text-[0.9375rem] text-text-muted leading-relaxed m-0">
                   Comme le jeu peut se dérouler sur plusieurs jours et que le réseau de bus Tadao est gratuit pour tous, vous
                   pouvez facilement adapter ou reporter la suite du parcours entre le 5 et le 18 juillet 2027. En cas d'alerte
                   météo sévère, les animations sont accueillies à l'abri à l'Office de Tourisme et les familles inscrites
@@ -1271,7 +1355,7 @@
             </details>
 
             <details class="faq-details card-l2 !p-0 overflow-hidden">
-              <summary class="px-5 py-4 flex items-center justify-between gap-4 font-extrabold text-[15px] sm:text-base text-ink hover:bg-parchment-light transition-colors">
+              <summary class="px-5 py-4 flex items-center justify-between gap-4 font-extrabold text-[0.9375rem] sm:text-base text-ink hover:bg-parchment-light transition-colors">
                 <span>Comment fonctionne le tirage au sort et la remise du Dobble Édition Lens ?</span>
                 <svg class="faq-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                   stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -1279,7 +1363,7 @@
                 </svg>
               </summary>
               <div class="faq-answer">
-                <p class="px-5 pb-4 pt-3 border-t border-ink/15 text-[15px] text-text-muted leading-relaxed m-0">
+                <p class="px-5 pb-4 pt-3 border-t border-ink/15 text-[0.9375rem] text-text-muted leading-relaxed m-0">
                   Une fois les 6 fragments validés, l'application débloque votre QR code de victoire pour retirer votre boîte
                   collector <strong class="text-ink">Dobble Édition Lens</strong> à l'Office de Tourisme (dans la limite des stocks
                   disponibles, à raison d'<strong class="text-ink">une boîte par famille ou équipe</strong>). L'adresse e-mail de votre équipe est
@@ -1289,7 +1373,7 @@
             </details>
 
             <details class="faq-details card-l2 !p-0 overflow-hidden">
-              <summary class="px-5 py-4 flex items-center justify-between gap-4 font-extrabold text-[15px] sm:text-base text-ink hover:bg-parchment-light transition-colors">
+              <summary class="px-5 py-4 flex items-center justify-between gap-4 font-extrabold text-[0.9375rem] sm:text-base text-ink hover:bg-parchment-light transition-colors">
                 <span>J'ai déjà récupéré mon kit : comment ouvrir le jeu maintenant ?</span>
                 <svg class="faq-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                   stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -1297,7 +1381,7 @@
                 </svg>
               </summary>
               <div class="faq-answer">
-                <p class="px-5 pb-4 pt-3 border-t border-ink/15 text-[15px] text-text-muted leading-relaxed m-0">
+                <p class="px-5 pb-4 pt-3 border-t border-ink/15 text-[0.9375rem] text-text-muted leading-relaxed m-0">
                   Utilisez le lien reçu par e-mail ou rendez-vous sur notre
                   <a href="./acces-jeu.html" class="text-blood font-bold underline underline-offset-2 hover:text-ink">
                     page d'accès direct au jeu
@@ -1322,10 +1406,10 @@
           <aside class="bg-parchment-light border-b-[3px] lg:border-b-0 lg:border-r-[3px] border-ink p-6 sm:p-8 flex flex-col justify-between gap-6"
             aria-labelledby="pass-summary-title">
             <div>
-              <h3 id="pass-summary-title" class="display-title text-2xl sm:text-[26px] text-blood mb-5">
+              <h3 id="pass-summary-title" class="display-title text-2xl sm:text-[1.625rem] text-blood mb-5">
                 Votre Pass Expédition
               </h3>
-              <ul class="space-y-4 text-sm sm:text-[15px] text-ink font-semibold leading-relaxed list-none p-0 m-0">
+              <ul class="space-y-4 text-sm sm:text-[0.9375rem] text-ink font-semibold leading-relaxed list-none p-0 m-0">
                 <li class="flex items-start gap-3">
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#841818" stroke-width="2.3"
                     stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="shrink-0 mt-0.5">
@@ -1360,7 +1444,7 @@
             </div>
 
             <div class="space-y-4">
-              <p class="card-l3 !bg-gold-glow text-xs sm:text-[13px] text-amber-text-deep font-semibold m-0 leading-relaxed">
+              <p class="card-l3 !bg-gold-glow text-xs sm:text-[0.8125rem] text-amber-text-deep font-semibold m-0 leading-relaxed">
                 <em>
                   Stock limité pendant la collaboration : réservez votre jour de retrait pour garantir votre kit.
                   Parcours réalisable en une journée ou sur plusieurs jours jusqu'au 18 juillet 2027.
@@ -1460,7 +1544,7 @@
                 <div class="flex items-start gap-3 bg-parchment-light border-2 border-ink/20 rounded-xl p-3.5">
                   <input id="rgpd-consent" name="consent" type="checkbox" required
                     class="w-5 h-5 mt-0.5 shrink-0 accent-blood cursor-pointer">
-                  <label for="rgpd-consent" class="text-xs sm:text-[13px] text-ink leading-relaxed cursor-pointer">
+                  <label for="rgpd-consent" class="text-xs sm:text-[0.8125rem] text-ink leading-relaxed cursor-pointer">
                     J'accepte le
                     <a href="./reglement-concours.html" class="text-blood font-bold underline underline-offset-2">
                       règlement du jeu-concours
@@ -1497,7 +1581,7 @@
                 </h3>
               </div>
 
-              <p class="text-sm sm:text-[15px] leading-relaxed m-0">
+              <p class="text-sm sm:text-[0.9375rem] leading-relaxed m-0">
                 Votre demande est bien enregistrée. Vous recevrez par e-mail votre récapitulatif ainsi que le
                 <strong>lien d'accès direct à l'application dès le lancement de l'événement à partir du 5 juillet
                   2027</strong>.
@@ -1550,10 +1634,10 @@
   </main>
 
   <!-- [10] Footer Institutionnel -->
-  <footer class="bg-ink text-[#E5E7EB] border-t-[3px] border-ink py-12 px-4 sm:px-6">
+  <footer class="site-footer bg-ink text-[#E5E7EB] border-t-[3px] border-ink py-12 px-4 sm:px-6">
     <div class="max-w-[1200px] mx-auto flex flex-col lg:flex-row justify-between items-start lg:items-center gap-8">
       <div>
-        <p class="inline-flex items-center gap-3 bg-white border-2 border-white rounded-xl px-4 py-2 mb-4 m-0">
+        <p class="partner-pill inline-flex items-center gap-3 bg-white border-2 border-white rounded-xl px-4 py-2 mb-4 m-0">
           <img src="./lens-tourisme-logo-e1673958887436.webp" alt="Logo Lens Liévin Tourisme" width="115" height="40"
             loading="lazy" class="h-8 w-auto object-contain">
           <span aria-hidden="true" class="text-sm font-extrabold text-ink">×</span>

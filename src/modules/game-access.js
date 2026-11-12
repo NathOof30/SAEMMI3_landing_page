@@ -25,15 +25,18 @@ export function initGameAccessPage() {
 
     lookupEmail.addEventListener('input', () => {
       lookupEmail.setCustomValidity('');
+      lookupEmail.removeAttribute('aria-invalid');
       lookupStatus.hidden = true;
       lookupStatus.textContent = '';
     });
 
     lookupForm.addEventListener('submit', (event) => {
       event.preventDefault();
+      lookupEmail.removeAttribute('aria-invalid');
       const email = validateEmailField(lookupEmail);
 
       if (!lookupForm.checkValidity()) {
+        lookupEmail.setAttribute('aria-invalid', 'true');
         lookupStatus.textContent =
           lookupEmail.validationMessage || 'Veuillez saisir une adresse e-mail complète.';
         lookupStatus.hidden = false;

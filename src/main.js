@@ -1,7 +1,9 @@
+import { initAccessibility } from './modules/accessibility.js';
 import { initGameAccessPage } from './modules/game-access.js';
 import {
   initFaqAccordion,
   initHeroParallax,
+  initLensCarouselControls,
   initMobileStickyCta,
   initMysteryStage,
   initPhoneTilt,
@@ -16,10 +18,12 @@ import { initReservationForm } from './modules/reservation.js';
  * @returns {void}
  */
 function bootstrap() {
+  initAccessibility();
   initScrollReveal();
   initKeyForge();
   initMysteryStage();
   initFaqAccordion();
+  initLensCarouselControls();
   initHeroParallax();
   initPhoneTilt();
   initMobileStickyCta();

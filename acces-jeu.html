@@ -8,10 +8,33 @@
   <meta name="description"
     content="Accédez à l'application de L'Expédition Secrète à Lens si vous disposez déjà de votre kit d'explorateur ou vérifiez votre réservation avant le lancement le 5 juillet 2027.">
   <link rel="icon" type="image/svg+xml" href="./icon.svg">
+  <meta name="color-scheme" content="light dark">
   <link rel="preconnect" href="https://use.typekit.net" crossorigin>
   <link rel="preconnect" href="https://p.typekit.net" crossorigin>
   <link rel="stylesheet" href="https://use.typekit.net/msd2zjt.css">
   <link rel="stylesheet" href="./src/styles/main.css">
+  <script>
+    (function () {
+      try {
+        var prefs = {};
+        try {
+          var raw = localStorage.getItem('expeditionA11yPrefs');
+          prefs = (raw ? JSON.parse(raw) : {}) || {};
+        } catch (e) {}
+        var root = document.documentElement;
+        var sysDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        var sysReduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        var theme = prefs.theme === 'dark' || prefs.theme === 'light' ? prefs.theme : (sysDark ? 'dark' : 'light');
+        var textSize = prefs.textSize === 'large' || prefs.textSize === 'xlarge' ? prefs.textSize : 'normal';
+        var motion = prefs.motion === 'reduce' || prefs.motion === 'no-preference' ? prefs.motion : (sysReduce ? 'reduce' : 'no-preference');
+        var reading = prefs.reading === true ? 'enhanced' : 'normal';
+        root.setAttribute('data-theme', theme);
+        root.setAttribute('data-text-size', textSize);
+        root.setAttribute('data-motion', motion);
+        root.setAttribute('data-reading', reading);
+      } catch (e) {}
+    })();
+  </script>
 </head>
 
 <body class="min-h-screen flex flex-col bg-expedition-paper">
@@ -19,15 +42,15 @@
 
   <header class="site-header">
     <div
-      class="max-w-[1200px] mx-auto px-4 sm:px-6 min-h-[60px] md:min-h-[68px] flex items-center justify-between gap-3">
+      class="max-w-[1200px] mx-auto px-4 sm:px-6 min-h-[60px] md:min-h-[68px] py-1.5 flex flex-wrap items-center justify-between gap-2 sm:gap-3">
       <div class="flex items-center gap-3 min-w-0">
         <a href="./index.html"
-          class="display-title text-[16px] sm:text-xl text-blood no-underline hover:text-ink transition-colors whitespace-nowrap truncate"
+          class="display-title text-base sm:text-xl text-blood no-underline hover:text-ink transition-colors whitespace-nowrap truncate"
           aria-label="Accueil, L'Expédition Secrète Lens">
           <strong>L'Expédition Secrète<span class="hidden xl:inline"> à Lens</span></strong>
         </a>
         <p
-          class="hidden lg:inline-flex items-center gap-2 bg-white border-2 border-ink rounded-full px-3 py-1 shrink-0 m-0">
+          class="partner-pill hidden lg:inline-flex items-center gap-2 bg-white border-2 border-ink rounded-full px-3 py-1 shrink-0 m-0">
           <img src="./lens-tourisme-logo-e1673958887436.webp" alt="Logo Lens Liévin Tourisme" width="115" height="40"
             class="h-5 w-auto object-contain">
           <span aria-hidden="true" class="text-xs font-extrabold text-ink">×</span>
@@ -35,8 +58,8 @@
         </p>
       </div>
 
-      <nav aria-label="Navigation secondaire" class="flex items-center gap-3 sm:gap-5 shrink-0">
-        <ul class="flex items-center gap-3 sm:gap-5 list-none m-0 p-0 text-sm font-extrabold">
+      <nav aria-label="Navigation secondaire" class="flex items-center gap-2 sm:gap-4 shrink-0">
+        <ul class="flex items-center gap-2 sm:gap-4 list-none m-0 p-0 text-sm font-extrabold">
           <li class="hidden sm:block">
             <a href="./index.html" class="text-ink no-underline hover:text-blood transition-colors whitespace-nowrap">
               Retour à la présentation
@@ -47,10 +70,25 @@
               Contacter l'Office de Tourisme
             </a>
           </li>
+          <li class="md:hidden">
+            <div id="a11y-widget">
+              <button type="button" id="a11y-toggle-btn"
+                class="a11y-toggle-btn inline-flex items-center justify-center gap-1.5 min-h-[40px] min-w-[40px] px-2.5 py-1.5 rounded-xl border-2 border-ink bg-surface text-ink text-xs sm:text-sm font-extrabold cursor-pointer hover:bg-gold-soft transition-colors whitespace-nowrap"
+                aria-expanded="false" aria-controls="a11y-panel" aria-label="Options d'accessibilité">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+                  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="shrink-0">
+                  <circle cx="12" cy="5" r="2" />
+                  <path d="M5 9h14" />
+                  <path d="M12 9v6" />
+                  <path d="M9 21l3-6 3 6" />
+                </svg>
+              </button>
+            </div>
+          </li>
           <li>
             <a href="./index.html#inscription"
-              class="btn-expedition btn-expedition--gold btn-expedition--sm !px-2.5 sm:!px-4 !text-[13px] sm:!text-[14px] whitespace-nowrap">
-              Réserver un kit<span class="hidden sm:inline"> gratuit</span>
+              class="btn-expedition btn-expedition--gold btn-expedition--sm !px-2.5 sm:!px-4 !text-[0.8125rem] sm:!text-sm whitespace-nowrap">
+              Réserver<span class="hidden sm:inline"> un kit gratuit</span>
             </a>
           </li>
         </ul>
@@ -58,7 +96,23 @@
     </div>
   </header>
 
-  <main id="main-content" class="flex-1 w-full max-w-[920px] mx-auto px-4 sm:px-6 py-10 sm:py-14 space-y-8">
+  <!-- Pastille d'accessibilité flottante (PC >= 768px) -->
+  <aside id="a11y-floating-widget" aria-label="Accessibilité" class="a11y-floating hidden md:block">
+    <button type="button" id="a11y-floating-toggle-btn"
+      class="a11y-toggle-btn a11y-floating-pill"
+      aria-expanded="false" aria-controls="a11y-panel" aria-label="Options d'accessibilité" title="Options d'accessibilité">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+        stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="shrink-0">
+        <circle cx="12" cy="5" r="2" />
+        <path d="M5 9h14" />
+        <path d="M12 9v6" />
+        <path d="M9 21l3-6 3 6" />
+      </svg>
+      <span>Accessibilité</span>
+    </button>
+  </aside>
+
+  <main id="main-content" tabindex="-1" class="flex-1 w-full max-w-[920px] mx-auto px-4 sm:px-6 py-10 sm:py-14 space-y-8">
     <header class="space-y-4">
       <p class="m-0">
         <a href="./index.html"
@@ -69,7 +123,7 @@
       <h1 class="display-title text-3xl sm:text-5xl text-ink m-0">
         Accès au jeu : vous avez déjà votre kit ou votre réservation ?
       </h1>
-      <p class="text-[17px] text-text-muted max-w-[65ch] leading-relaxed m-0">
+      <p class="text-[1.0625rem] text-text-muted max-w-[65ch] leading-relaxed m-0">
         L'application de jeu de piste s'ouvre <strong class="text-ink">directement dans le navigateur de votre
           smartphone</strong>
         (Chrome ou Safari), sans rien installer depuis les boutiques d'applications. Elle sera ouverte aux équipes du
@@ -87,7 +141,7 @@
         </svg>
         <h2 class="text-lg font-extrabold text-[#14532D] m-0">Votre réservation enregistrée sur cet appareil</h2>
       </div>
-      <p id="session-reservation-summary" class="text-sm sm:text-[15px] font-semibold leading-relaxed m-0"></p>
+      <p id="session-reservation-summary" class="text-sm sm:text-[0.9375rem] font-semibold leading-relaxed m-0"></p>
     </aside>
 
     <section class="card-l1" aria-labelledby="how-to-launch-title">
@@ -99,7 +153,7 @@
           <span
             class="display-title inline-flex items-center justify-center w-9 h-9 rounded-lg bg-blood text-gold border-2 border-ink text-base shrink-0"
             aria-hidden="true">01</span>
-          <p class="text-[15px] text-text-muted leading-relaxed m-0">
+          <p class="text-[0.9375rem] text-text-muted leading-relaxed m-0">
             <strong class="text-ink">Via le lien reçu par e-mail :</strong> chaque parent inscrit sur le site vitrine
             reçoit
             automatiquement le lien d'ouverture le matin du <strong class="text-ink">5 juillet 2027</strong>.
@@ -109,7 +163,7 @@
           <span
             class="display-title inline-flex items-center justify-center w-9 h-9 rounded-lg bg-blood text-gold border-2 border-ink text-base shrink-0"
             aria-hidden="true">02</span>
-          <p class="text-[15px] text-text-muted leading-relaxed m-0">
+          <p class="text-[0.9375rem] text-text-muted leading-relaxed m-0">
             <strong class="text-ink">Via le QR code de votre kit papier :</strong> scannez avec l'appareil photo de
             votre téléphone le
             QR code d'accueil imprimé sur votre grande carte de Lens remise à l'Office de Tourisme.
@@ -119,7 +173,7 @@
           <span
             class="display-title inline-flex items-center justify-center w-9 h-9 rounded-lg bg-blood text-gold border-2 border-ink text-base shrink-0"
             aria-hidden="true">03</span>
-          <p class="text-[15px] text-text-muted leading-relaxed m-0">
+          <p class="text-[0.9375rem] text-text-muted leading-relaxed m-0">
             <strong class="text-ink">À votre rythme :</strong> une fois votre compte d'équipe créé dans le jeu, votre
             progression est
             sauvegardée. Vous pouvez parcourir les étapes en une journée ou sur plusieurs jours jusqu'au 18 juillet
@@ -134,7 +188,7 @@
       <h2 id="lookup-title" class="display-title text-2xl sm:text-3xl text-blood mb-3">
         Vérifier votre adresse e-mail de lancement
       </h2>
-      <p class="text-[15px] text-text-muted leading-relaxed mb-5 max-w-[60ch]">
+      <p class="text-[0.9375rem] text-text-muted leading-relaxed mb-5 max-w-[60ch]">
         Saisissez l'adresse e-mail utilisée lors de votre pré-inscription pour vérifier l'envoi du lien d'ouverture.
       </p>
 
@@ -164,7 +218,7 @@
         <h2 id="no-kit-title" class="display-title text-2xl text-ink m-0">
           Vous n'avez pas encore réservé votre kit gratuit ?
         </h2>
-        <p class="text-sm sm:text-[15px] text-text-muted leading-relaxed max-w-[56ch] m-0">
+        <p class="text-sm sm:text-[0.9375rem] text-text-muted leading-relaxed max-w-[56ch] m-0">
           Le jeu fonctionne en duo avec la grande carte papier illustrée et la loupe d'explorateur. Réservez votre kit
           en moins d'une minute pour le retirer à l'Office de Tourisme de Lens-Liévin (16 Place Jean-Jaurès).
         </p>
@@ -177,10 +231,10 @@
     </section>
   </main>
 
-  <footer class="bg-ink text-[#E5E7EB] border-t-[3px] border-ink py-10 px-4 sm:px-6 mt-auto">
+  <footer class="site-footer bg-ink text-[#E5E7EB] border-t-[3px] border-ink py-10 px-4 sm:px-6 mt-auto">
     <div class="max-w-[1200px] mx-auto flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
       <div>
-        <p class="inline-flex items-center gap-3 bg-white border-2 border-white rounded-xl px-3.5 py-1.5 mb-3 m-0">
+        <p class="partner-pill inline-flex items-center gap-3 bg-white border-2 border-white rounded-xl px-3.5 py-1.5 mb-3 m-0">
           <img src="./lens-tourisme-logo-e1673958887436.webp" alt="Logo Lens Liévin Tourisme" width="115" height="40"
             loading="lazy" class="h-7 w-auto object-contain">
           <span aria-hidden="true" class="text-xs font-extrabold text-ink">×</span>

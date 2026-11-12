@@ -1,3 +1,5 @@
+import { isReducedMotionPreferred, onAccessibilityChange } from './accessibility.js';
+
 /**
  * Active la progression interactive des fragments de la Clé Antique au défilement et au focus/survol.
  *
@@ -8,10 +10,6 @@ export function initKeyForge() {
   const keyShards = document.querySelectorAll('[data-key-shard]');
 
   if (!stepTriggers.length || !keyShards.length) return;
-
-  const prefersReduced =
-    typeof window.matchMedia === 'function' &&
-    window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   let highestForged = 0;
 
@@ -29,7 +27,7 @@ export function initKeyForge() {
     });
   };
 
-  if (prefersReduced || !('IntersectionObserver' in window)) {
+  if (isReducedMotionPreferred() || !('IntersectionObserver' in window)) {
     forgeUpTo(keyShards.length);
     return;
   }
@@ -58,5 +56,23 @@ export function initKeyForge() {
     trigger.addEventListener('focusin', () => {
       forgeUpTo(trigger.getAttribute('data-forge-step'));
     });
+
+    trigger.addEventListener('click', () => {
+      forgeUpTo(trigger.getAttribute('data-forge-step'));
+    });
+
+    trigger.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        forgeUpTo(trigger.getAttribute('data-forge-step'));
+      }
+    });
+  });
+
+  onAccessibilityChange((state) => {
+    if (state.reducedMotion) {
+      forgeObserver.disconnect();
+      forgeUpTo(keyShards.length);
+    }
   });
 }

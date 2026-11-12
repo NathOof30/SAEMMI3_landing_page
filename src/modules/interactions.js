@@ -1,14 +1,4 @@
-/**
- * Indique si l'utilisateur demande la réduction des animations système.
- *
- * @returns {boolean} `true` si `prefers-reduced-motion: reduce` est actif.
- */
-function prefersReducedMotion() {
-  return (
-    typeof window.matchMedia === 'function' &&
-    window.matchMedia('(prefers-reduced-motion: reduce)').matches
-  );
-}
+import { isReducedMotionPreferred, onAccessibilityChange } from './accessibility.js';
 
 /**
  * Active l'apparition progressive au défilement des blocs `[data-reveal]`
@@ -20,8 +10,16 @@ export function initScrollReveal() {
   const revealEls = document.querySelectorAll('[data-reveal]');
   if (!revealEls.length) return;
 
-  if (prefersReducedMotion() || !('IntersectionObserver' in window)) {
-    revealEls.forEach((el) => el.classList.add('is-revealed'));
+  const revealAllNow = () => {
+    document.documentElement.classList.remove('js-reveal-ready');
+    revealEls.forEach((el) => {
+      el.style.transitionDelay = '';
+      el.classList.add('is-revealed');
+    });
+  };
+
+  if (isReducedMotionPreferred() || !('IntersectionObserver' in window)) {
+    revealAllNow();
     return;
   }
 
@@ -48,7 +46,7 @@ export function initScrollReveal() {
 
         const target = entry.target;
         const delay = Number(target.getAttribute('data-reveal-delay')) || 0;
-        if (delay > 0) {
+        if (delay > 0 && !isReducedMotionPreferred()) {
           target.style.transitionDelay = `${delay}ms`;
           target.addEventListener(
             'transitionend',
@@ -67,26 +65,33 @@ export function initScrollReveal() {
   );
 
   pendingEls.forEach((el) => revealObserver.observe(el));
+
+  onAccessibilityChange((state) => {
+    if (state.reducedMotion) {
+      revealObserver.disconnect();
+      revealAllNow();
+    }
+  });
 }
 
 /**
  * Gère la scène Grand Lot Mystère : accélération des rayons et changement de silhouette
- * mystère au survol ou au focus des cartes de lots (jamais au survol direct de l'image).
+ * mystère au survol, au focus ou au clavier des cartes de lots (jamais au survol direct de l'image).
  *
  * @returns {void}
  */
 export function initMysteryStage() {
-  const reducedMotion = prefersReducedMotion();
   const stages = document.querySelectorAll('.mystery-stage');
   const prizeList = document.querySelector('[data-prize-list]');
   const prizeTriggers = prizeList ? [...prizeList.querySelectorAll('[data-prize-trigger]')] : [];
   const prizeSvgs = [...document.querySelectorAll('[data-mystery-prize]')];
+  const stageStatus = document.getElementById('mystery-stage-status');
   const defaultPrize = 'grand-lot';
 
   if (!stages.length) return;
 
   const setStageSpeed = (stage, rate) => {
-    if (reducedMotion) return;
+    if (isReducedMotionPreferred()) return;
     const starburst = stage.querySelector('.mystery-starburst-svg');
     const anim = starburst?.getAnimations?.()[0];
     if (anim && typeof anim.updatePlaybackRate === 'function') {
@@ -94,7 +99,9 @@ export function initMysteryStage() {
     }
   };
 
-  const setActivePrize = (prizeId, previewing) => {
+  let lockedPrize = null;
+
+  const setActivePrize = (prizeId, previewing, { announceReset = false } = {}) => {
     const targetPrize = prizeId || defaultPrize;
 
     prizeSvgs.forEach((svg) => {
@@ -104,9 +111,27 @@ export function initMysteryStage() {
     });
 
     prizeTriggers.forEach((trigger) => {
+      const card = trigger.closest('.prize-card') || trigger;
       const isMatch = previewing && trigger.getAttribute('data-prize-trigger') === targetPrize;
-      trigger.classList.toggle('is-selected', isMatch);
+      card.classList.toggle('is-selected', isMatch);
+      if (trigger.hasAttribute('aria-pressed')) {
+        const isLocked = lockedPrize === trigger.getAttribute('data-prize-trigger');
+        trigger.setAttribute('aria-pressed', String(isLocked));
+      }
     });
+
+    if (stageStatus && previewing) {
+      const activeTrigger = prizeTriggers.find(
+        (trigger) => trigger.getAttribute('data-prize-trigger') === targetPrize,
+      );
+      const card = activeTrigger?.closest('.prize-card') || activeTrigger;
+      const title = card?.querySelector('h3')?.textContent?.trim() || activeTrigger?.textContent?.trim();
+      if (title) {
+        stageStatus.textContent = `Aperçu affiché : ${title}.`;
+      }
+    } else if (stageStatus && !previewing) {
+      stageStatus.textContent = announceReset ? 'Aperçu réinitialisé sur le lot mystère principal.' : '';
+    }
 
     stages.forEach((stage) => {
       stage.setAttribute('data-active-prize', targetPrize);
@@ -134,14 +159,23 @@ export function initMysteryStage() {
         ? window.matchMedia('(hover: hover) and (pointer: fine)')
         : null;
 
-    let activeTouchPrize = null;
+    const toggleLockedPrize = (prizeId) => {
+      if (lockedPrize === prizeId) {
+        lockedPrize = null;
+        setActivePrize(defaultPrize, false, { announceReset: true });
+      } else {
+        lockedPrize = prizeId;
+        setActivePrize(prizeId, true);
+      }
+    };
 
     prizeTriggers.forEach((trigger) => {
       const prizeId = trigger.getAttribute('data-prize-trigger') || defaultPrize;
+      const card = trigger.closest('.prize-card') || trigger;
 
-      trigger.addEventListener('pointerenter', (event) => {
+      card.addEventListener('pointerenter', (event) => {
         if (event.pointerType === 'touch') return;
-        activeTouchPrize = null;
+        lockedPrize = null;
         setActivePrize(prizeId, true);
       });
 
@@ -149,50 +183,71 @@ export function initMysteryStage() {
         setActivePrize(prizeId, true);
       });
 
+      if (trigger.tagName !== 'BUTTON') {
+        trigger.addEventListener('keydown', (event) => {
+          if (event.key === 'Enter' || event.key === ' ') {
+            event.preventDefault();
+            toggleLockedPrize(prizeId);
+          }
+        });
+      }
+
       trigger.addEventListener('click', (event) => {
         const isTouchLike = event.pointerType === 'touch' || (hoverCapable && !hoverCapable.matches);
-        if (!isTouchLike) return;
-
-        if (activeTouchPrize === prizeId) {
-          activeTouchPrize = null;
-          setActivePrize(defaultPrize, false);
-        } else {
-          activeTouchPrize = prizeId;
-          setActivePrize(prizeId, true);
-        }
+        if (!isTouchLike && event.detail !== 0) return;
+        toggleLockedPrize(prizeId);
       });
     });
 
     prizeList.addEventListener('pointerleave', (event) => {
       if (event.pointerType === 'touch') return;
-      activeTouchPrize = null;
+      if (lockedPrize) {
+        setActivePrize(lockedPrize, true);
+        return;
+      }
       setActivePrize(defaultPrize, false);
     });
 
     prizeList.addEventListener('focusout', (event) => {
       if (!prizeList.contains(event.relatedTarget)) {
-        activeTouchPrize = null;
+        if (lockedPrize) {
+          setActivePrize(lockedPrize, true);
+          return;
+        }
         setActivePrize(defaultPrize, false);
       }
     });
 
     document.addEventListener('click', (event) => {
-      if (activeTouchPrize !== null && !prizeList.contains(event.target)) {
-        activeTouchPrize = null;
+      if (lockedPrize !== null && !prizeList.contains(event.target)) {
+        lockedPrize = null;
         setActivePrize(defaultPrize, false);
       }
     });
   }
+
+  onAccessibilityChange((state) => {
+    if (state.reducedMotion) {
+      stages.forEach((stage) => {
+        const starburst = stage.querySelector('.mystery-starburst-svg');
+        const anim = starburst?.getAnimations?.()[0];
+        if (anim && typeof anim.updatePlaybackRate === 'function') {
+          anim.updatePlaybackRate(1);
+        }
+      });
+    }
+  });
 }
 
 /**
  * Anime en douceur l'ouverture et la fermeture des accordéons FAQ et disclosures (`.faq-details`).
+ * Respecte dynamiquement la préférence de réduction des animations.
  *
  * @returns {void}
  */
 export function initFaqAccordion() {
   const detailsList = document.querySelectorAll('.faq-details');
-  if (!detailsList.length || prefersReducedMotion()) return;
+  if (!detailsList.length) return;
 
   detailsList.forEach((details) => {
     const summary = details.querySelector('summary');
@@ -284,6 +339,14 @@ export function initFaqAccordion() {
     };
 
     summary.addEventListener('click', (event) => {
+      if (isReducedMotionPreferred()) {
+        if (animation) {
+          animation.cancel();
+          finishAnimation(details.open);
+        }
+        return;
+      }
+
       event.preventDefault();
       if (isClosing || !details.open) {
         expand();
@@ -291,7 +354,52 @@ export function initFaqAccordion() {
         shrink();
       }
     });
+
+    onAccessibilityChange((state) => {
+      if (state.reducedMotion && animation) {
+        animation.cancel();
+        finishAnimation(!isClosing);
+      }
+    });
   });
+}
+
+/**
+ * Ajoute des contrôles clavier accessibles (Précédent / Suivant) au carrousel mobile des ambiances de Lens.
+ *
+ * @returns {void}
+ */
+export function initLensCarouselControls() {
+  const carousel = document.getElementById('lens-carousel');
+  const prevBtn = document.getElementById('lens-carousel-prev');
+  const nextBtn = document.getElementById('lens-carousel-next');
+
+  if (!carousel || !prevBtn || !nextBtn) return;
+
+  const updateButtons = () => {
+    const maxScroll = Math.max(0, carousel.scrollWidth - carousel.clientWidth);
+    const isScrollable = maxScroll > 2;
+    if (isScrollable) {
+      carousel.setAttribute('tabindex', '0');
+    } else {
+      carousel.removeAttribute('tabindex');
+    }
+    prevBtn.disabled = carousel.scrollLeft <= 4;
+    nextBtn.disabled = carousel.scrollLeft >= maxScroll - 4;
+  };
+
+  const scrollByCard = (direction) => {
+    const firstCard = carousel.querySelector('li');
+    const step = firstCard ? firstCard.getBoundingClientRect().width + 16 : 280;
+    const behavior = isReducedMotionPreferred() ? 'auto' : 'smooth';
+    carousel.scrollBy({ left: direction * step, behavior });
+  };
+
+  prevBtn.addEventListener('click', () => scrollByCard(-1));
+  nextBtn.addEventListener('click', () => scrollByCard(1));
+  carousel.addEventListener('scroll', updateButtons, { passive: true });
+  window.addEventListener('resize', updateButtons, { passive: true });
+  updateButtons();
 }
 
 /**
@@ -302,7 +410,7 @@ export function initFaqAccordion() {
 export function initHeroParallax() {
   const hero = document.getElementById('hero');
   const layers = hero?.querySelectorAll('.hero-parallax-layer[data-parallax]');
-  if (!hero || !layers?.length || prefersReducedMotion()) return;
+  if (!hero || !layers?.length) return;
 
   const desktopHoverQuery =
     typeof window.matchMedia === 'function'
@@ -326,7 +434,7 @@ export function initHeroParallax() {
 
   const applyLayers = () => {
     rafId = 0;
-    if (desktopHoverQuery && !desktopHoverQuery.matches) {
+    if (isReducedMotionPreferred() || (desktopHoverQuery && !desktopHoverQuery.matches)) {
       resetLayers();
       return;
     }
@@ -341,7 +449,7 @@ export function initHeroParallax() {
   };
 
   hero.addEventListener('pointermove', (event) => {
-    if (event.pointerType === 'touch') return;
+    if (isReducedMotionPreferred() || event.pointerType === 'touch') return;
     if (desktopHoverQuery && !desktopHoverQuery.matches) return;
 
     const rect = hero.getBoundingClientRect();
@@ -367,6 +475,10 @@ export function initHeroParallax() {
     },
     { passive: true },
   );
+
+  onAccessibilityChange((state) => {
+    if (state.reducedMotion) resetLayers();
+  });
 }
 
 /**
@@ -378,7 +490,7 @@ export function initHeroParallax() {
 export function initPhoneTilt() {
   const phoneSlot = document.querySelector('#hero [data-phone-tilt]');
   const phoneCard = phoneSlot?.querySelector('.hero-collage__phone-card') || phoneSlot;
-  if (!phoneSlot || !phoneCard || prefersReducedMotion()) return;
+  if (!phoneSlot || !phoneCard) return;
 
   const hoverFineQuery =
     typeof window.matchMedia === 'function'
@@ -402,7 +514,7 @@ export function initPhoneTilt() {
 
   const applyTilt = () => {
     rafId = 0;
-    if (hoverFineQuery && !hoverFineQuery.matches) {
+    if (isReducedMotionPreferred() || (hoverFineQuery && !hoverFineQuery.matches)) {
       resetTilt();
       return;
     }
@@ -412,7 +524,7 @@ export function initPhoneTilt() {
   };
 
   phoneSlot.addEventListener('pointermove', (event) => {
-    if (event.pointerType === 'touch') return;
+    if (isReducedMotionPreferred() || event.pointerType === 'touch') return;
     if (hoverFineQuery && !hoverFineQuery.matches) return;
 
     const rect = phoneSlot.getBoundingClientRect();
@@ -421,7 +533,6 @@ export function initPhoneTilt() {
     const nx = Math.max(-1, Math.min(1, ((event.clientX - rect.left) / rect.width - 0.5) * 2));
     const ny = Math.max(-1, Math.min(1, ((event.clientY - rect.top) / rect.height - 0.5) * 2));
 
-    // Inversé : survol haut-droit (nx > 0, ny < 0) => rotateX > 0, rotateY > 0 (haut-droit recule, bas-gauche avance)
     nextRx = -ny * MAX_TILT_X;
     nextRy = nx * MAX_TILT_Y;
 
@@ -448,6 +559,10 @@ export function initPhoneTilt() {
     },
     { passive: true },
   );
+
+  onAccessibilityChange((state) => {
+    if (state.reducedMotion) resetTilt();
+  });
 }
 
 /**

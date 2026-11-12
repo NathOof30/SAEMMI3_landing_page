@@ -717,7 +717,7 @@
     stroke: #1A1A1A;
   }
 
-  /* Section 5 — Galerie Lens : Carrousel Mobile + Bento Desktop */
+  /* Section 5 : Galerie Lens : Carrousel Mobile + Bento Desktop */
   .lens-carousel {
     display: flex;
     overflow-x: auto;
@@ -779,7 +779,7 @@
     }
   }
 
-  /* Section 6 — Showcase Dobble Édition Lens */
+  /* Section 6 : Showcase Dobble Édition Lens */
   .dobble-showcase .dobble-showcase-media {
     transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
   }
@@ -874,7 +874,8 @@
   }
 
   .mystery-qmark {
-    transform-origin: 190px 96px;
+    transform-box: fill-box;
+    transform-origin: center;
     transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), filter 0.25s ease;
   }
 

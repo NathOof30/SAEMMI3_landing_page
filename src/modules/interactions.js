@@ -171,6 +171,14 @@ export function initMysteryStage() {
 
     prizeList.addEventListener('focusout', (event) => {
       if (!prizeList.contains(event.relatedTarget)) {
+        activeTouchPrize = null;
+        setActivePrize(defaultPrize, false);
+      }
+    });
+
+    document.addEventListener('click', (event) => {
+      if (activeTouchPrize !== null && !prizeList.contains(event.target)) {
+        activeTouchPrize = null;
         setActivePrize(defaultPrize, false);
       }
     });
@@ -217,7 +225,7 @@ export function initFaqAccordion() {
       if (animation) animation.cancel();
 
       answer.style.overflow = 'hidden';
-      animation = answer.animate(
+      const currentAnim = answer.animate(
         [
           { height: startHeight, opacity: startOpacity },
           { height: '0px', opacity: 0 },
@@ -227,9 +235,14 @@ export function initFaqAccordion() {
           easing: 'cubic-bezier(0.22, 1, 0.36, 1)',
         },
       );
+      animation = currentAnim;
 
-      animation.onfinish = () => finishAnimation(false);
-      animation.oncancel = () => {
+      currentAnim.onfinish = () => {
+        if (animation !== currentAnim) return;
+        finishAnimation(false);
+      };
+      currentAnim.oncancel = () => {
+        if (animation !== currentAnim) return;
         isClosing = false;
       };
     };
@@ -248,7 +261,7 @@ export function initFaqAccordion() {
       answer.style.overflow = 'hidden';
       const endHeight = `${answer.scrollHeight}px`;
 
-      animation = answer.animate(
+      const currentAnim = answer.animate(
         [
           { height: startHeight, opacity: startOpacity },
           { height: endHeight, opacity: 1 },
@@ -258,9 +271,14 @@ export function initFaqAccordion() {
           easing: 'cubic-bezier(0.22, 1, 0.36, 1)',
         },
       );
+      animation = currentAnim;
 
-      animation.onfinish = () => finishAnimation(true);
-      animation.oncancel = () => {
+      currentAnim.onfinish = () => {
+        if (animation !== currentAnim) return;
+        finishAnimation(true);
+      };
+      currentAnim.oncancel = () => {
+        if (animation !== currentAnim) return;
         isExpanding = false;
       };
     };

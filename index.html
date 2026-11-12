@@ -327,13 +327,21 @@
               Teaser officiel tourné à Lens
             </h3>
             <figure class="bg-stage-dark border-[3px] border-ink rounded-[20px] shadow-[0_6px_0_#1A1A1A] p-4 sm:p-5 m-0 mb-4">
-              <div class="placeholder-frame placeholder-frame--dark aspect-video w-full">
-                <p class="text-sm sm:text-base text-[#E5E7EB] leading-relaxed max-w-[48ch] m-0">
-                  <strong class="block text-gold font-extrabold mb-1.5">Emplacement vidéo teaser (format 16:9, livraison audiovisuelle à venir) :</strong>
-                  découvrez en moins d'une minute la remise du kit à l'Office de Tourisme, la recherche sur carte à la
-                  loupe avec les enfants et les animations sur le terrain à Lens.
-                </p>
-              </div>
+              <video
+                class="block w-full aspect-video rounded-[12px] border-2 border-ink bg-black object-contain"
+                controls
+                playsinline
+                preload="metadata"
+                poster="./images/famille_carte.webp"
+                aria-describedby="teaser-video-description">
+                <source src="./videos/gali-teaser.mp4" type="video/mp4">
+                Votre navigateur ne peut pas lire cette vidéo.
+                <a href="./videos/gali-teaser.mp4">Télécharger la vidéo teaser</a>
+              </video>
+              <p id="teaser-video-description" class="sr-only">
+                Teaser de moins d'une minute présentant la remise du kit, la recherche sur carte avec les enfants et
+                les animations du jeu à Lens.
+              </p>
             </figure>
             <details class="faq-details card-l3 !p-0 overflow-hidden">
               <summary class="px-4 py-3 flex items-center justify-between gap-3 font-extrabold text-sm text-ink hover:bg-gold-soft/50 transition-colors">
